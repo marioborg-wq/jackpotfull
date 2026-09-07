@@ -167,8 +167,8 @@
       <div ref="{{ winAmountRef }}" style="display: flex; flex-direction: row; align-items: center; margin-top: 8px;"></div>
     </div>
 
-    <div ref="{{ wheelGroupRef }}" style="position: absolute; left: 0; top: 0; width: 393px; height: 861px; transform-origin: 197px 569px; transform: scale(1.12); z-index: 3;">
-    <div style="position: absolute; left: 17px; top: 389px; width: 360px; height: 360px;">
+    <div ref="{{ wheelGroupRef }}" style="position: absolute; left: 0; top: 0; width: 393px; height: 861px; transform-origin: 197px 530px; transform: scale(1.32); z-index: 3;">
+    <div style="position: absolute; left: 17px; top: 350px; width: 360px; height: 360px;">
 
       <div ref="{{ winFlashRef }}" style="position: absolute; left: 50%; top: 46%; width: 200px; height: 200px; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle, rgba(255,255,235,0.95) 0%, rgba(255,200,80,0.55) 40%, rgba(255,140,0,0) 72%); opacity: 0; pointer-events: none; z-index: 3;"></div>
       <div ref="{{ haloRef }}" style="position: absolute; left: 50%; top: 50%; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle, rgba(255,120,0,0.3) 0%, rgba(218,0,0,0.14) 45%, rgba(0,0,0,0) 72%); transform: translate(-50%, -50%); opacity: 0; pointer-events: none;"></div>
@@ -238,7 +238,7 @@
 
     </div>
 
-    <div ref="{{ pointerWrapRef }}" style="position: absolute; left: 143px; top: 703px; width: 106px; height: 214px; z-index: 4; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));">
+    <div ref="{{ pointerWrapRef }}" style="position: absolute; left: 143px; top: 664px; width: 106px; height: 214px; z-index: 4; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));">
       <img src="skin/marker.png" alt="" style="width: 100%; height: 100%; object-fit: contain; display: block;" />
     </div>
   </div>
@@ -327,11 +327,10 @@ class Component extends DCLogic {
       const root = this.rootRef.current, phone = this.phoneRef.current;
       if (!root || !phone) return;
       const w = root.clientWidth || 393;
-      const h = root.clientHeight || 861;
-      const scale = Math.min(w / 393, h / 861);
+      const scale = w / 393;
       phone.style.transform = "scale(" + scale + ")";
-      phone.style.left = Math.round((w - 393 * scale) / 2) + "px";
-      phone.style.top = Math.round((h - 861 * scale) / 2) + "px";
+      phone.style.left = "0px";
+      phone.style.top = "0px";
     };
     this.rescale();
     if (window.ResizeObserver && this.rootRef.current) {
