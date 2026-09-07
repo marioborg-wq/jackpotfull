@@ -327,8 +327,11 @@ class Component extends DCLogic {
       const root = this.rootRef.current, phone = this.phoneRef.current;
       if (!root || !phone) return;
       const w = root.clientWidth || 393;
-      const scale = w / 393;
+      const h = root.clientHeight || 861;
+      const scale = Math.min(w / 393, h / 861);
       phone.style.transform = "scale(" + scale + ")";
+      phone.style.left = Math.round((w - 393 * scale) / 2) + "px";
+      phone.style.top = Math.round((h - 861 * scale) / 2) + "px";
     };
     this.rescale();
     if (window.ResizeObserver && this.rootRef.current) {
