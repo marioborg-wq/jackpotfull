@@ -364,6 +364,7 @@ class Component extends DCLogic {
       this.rollTo(tv, this.formatNumStr(newVal), 'tail');
     }, 1000);
     this.scheduleTick();
+    window.addEventListener("pointerdown", () => { window.__jwAudioUnlocked = true; }, { once: true });
     this._wheelTimer = setTimeout(() => this.setState({ wheelVisible: true }), 40000);
   }
 
