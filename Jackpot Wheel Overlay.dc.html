@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Anton&display=swap" />
+<script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.3/dist/dotlottie-wc.js" type="module"></script>
+<style>
+  @font-face {
+    font-family: "NN Swinton STD";
+    src: url("fonts/NNSwintonSTD-HeavyItalic.woff") format("woff");
+    font-weight: 900;
+    font-style: italic;
+    font-display: swap;
+  }
+  a { color: #00DD70; text-decoration: none; }
+  a:hover { color: #00C264; text-decoration: underline; }
+  @keyframes jw-spin { to { transform: rotate(360deg); } }
+  @keyframes jw-fadein { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes jw-flicker {
+    0%   { transform: translate(-50%, -50%) scale(1, 1);       opacity: 0.82; }
+    22%  { transform: translate(-50%, -51%) scale(1.06, 1.1);  opacity: 1; }
+    41%  { transform: translate(-50%, -49%) scale(0.95, 1.04); opacity: 0.7; }
+    63%  { transform: translate(-50%, -52%) scale(1.08, 1.14); opacity: 0.95; }
+    81%  { transform: translate(-50%, -50%) scale(0.98, 1.02); opacity: 0.78; }
+    100% { transform: translate(-50%, -50%) scale(1, 1);       opacity: 0.82; }
+  }
+  @keyframes jw-ember {
+    0%   { transform: translate(0, 0) scale(1); opacity: 0; }
+    12%  { opacity: 1; }
+    100% { transform: translate(var(--dx), -132px) scale(0.2); opacity: 0; }
+  }
+  @keyframes jw-idle-bob {
+    0%, 100% { transform: translateY(0px); }
+    50%      { transform: translateY(-5px); }
+  }
+  @keyframes jw-title-levitate {
+    0%, 100% { transform: translateY(0px); }
+    50%      { transform: translateY(-6px); }
+  }
+  @keyframes jw-title-pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.07); }
+  }
+  @keyframes jw-spark-twinkle {
+    0%, 100% { opacity: 0.15; transform: scale(0.5); }
+    50%      { opacity: 1;    transform: scale(1.3); }
+  }
+  @keyframes jw-halo {
+    0%, 100% { opacity: 0.35; transform: translate(-50%, -50%) scale(1); }
+    50%      { opacity: 0.6;  transform: translate(-50%, -50%) scale(1.08); }
+  }
+  @keyframes jw-coin-fall {
+    0%   { transform: translate(0, -60px) rotate(0deg); opacity: 0; }
+    8%   { opacity: 1; }
+    100% { transform: translate(var(--drift), 900px) rotate(var(--spin)); opacity: 0.95; }
+  }
+  @keyframes jw-title-pop {
+    0%   { transform: scale(0.4); opacity: 0; }
+    55%  { transform: scale(1.18); opacity: 1; }
+    75%  { transform: scale(0.94); }
+    90%  { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  @keyframes jw-shine {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -100% 0; }
+  }
+  @keyframes jw-win-flash {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+    12%  { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(2.4); }
+  }
+</style>
+</helmet>
+
+<div ref="{{ rootRef }}" style="position: absolute; inset: 0; overflow: hidden; font-family: Inter, sans-serif; animation: jw-fadein 700ms ease forwards;">
+  <div data-screen-label="Jackpot Wheel Overlay" class="jw-phone" ref="{{ phoneRef }}" style="position: absolute; left: 0; top: 0; width: 393px; height: 861px; overflow: hidden; background: transparent; transform-origin: top left;">
+    <div class="jw-preloader" ref="{{ preloaderRef }}" style="position: absolute; inset: 0; z-index: 20; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; transition: opacity 400ms ease;">
+      <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.7); z-index: 0;"></div>
+      <div style="width: 96px; height: 96px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.15); border-top-color: #FAD749; animation: jw-spin 900ms linear infinite; z-index: 1;"></div>
+      <span ref="{{ preloaderTextRef }}" style="font-family: Inter, sans-serif; font-weight: 600; font-size: 13px; color: #EEEEEE; z-index: 1;">Loading… 0%</span>
+    </div>
+    <audio ref="{{ musicRef }}" src="audio/suspense.wav" loop preload="auto" playsinline style="display: none;"></audio>
+    <audio ref="{{ countdownAudioRef }}" src="audio/countdown-sine-wave-beeps.mp3" preload="auto" playsinline style="display: none;"></audio>
+    <audio ref="{{ winLoopRef }}" src="audio/long-dramatic.mp3" loop preload="auto" playsinline style="display: none;"></audio>
+    <audio ref="{{ coinsSoundRef }}" src="audio/coins-drop.wav" loop preload="auto" playsinline style="display: none;"></audio>
+    <audio ref="{{ reelSpinRef }}" src="audio/reel-spin.wav" loop preload="auto" playsinline style="display: none;"></audio>
+
+    <div onClick="{{ onToggleMusic }}" style="position: absolute; right: 16px; bottom: 100px; width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 9;" style-hover="background: rgba(0,0,0,0.75);">
+      <svg ref="{{ speakerOnRef }}" width="20" height="20" viewBox="0 0 24 24" style="color: #FFFFFF;"><path d="M4 9v6h4l5 5V4L8 9H4Z" fill="currentColor"></path><path d="M16.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"></path><path d="M19 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"></path></svg>
+      <svg ref="{{ speakerOffRef }}" width="20" height="20" viewBox="0 0 24 24" style="color: #FFFFFF; display: none;"><path d="M4 9v6h4l5 5V4L8 9H4Z" fill="currentColor"></path><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+    </div>
+
+    <div class="jw-gradient-overlay" style="position: absolute; left: 0; top: 0; width: 393px; height: 861px; background: rgba(0,0,0,0.9);"></div>
+
+    <div ref="{{ topContentRef }}" style="transition: opacity 260ms cubic-bezier(0.2,0,0,1);">
+    <div style="position: absolute; left: 0; top: 0; width: 393px; height: 205px; z-index: 5; pointer-events: none;">
+      <div style="position: absolute; left: 50%; top: 145px; width: 230px; height: 90px; transform: translate(-50%, -50%); background: radial-gradient(50% 50% at 50% 62%, rgba(255,150,20,0.55) 0%, rgba(255,90,0,0.28) 45%, rgba(255,60,0,0) 75%); filter: blur(6px); animation: jw-flicker 1400ms ease-in-out infinite; z-index: 1;"></div>
+      <img class="jw-logo-img" src="skin/image-88.png" alt="KTO Jackpot de Fogo" style="position: absolute; left: 68.5px; top: 108px; width: 256px; height: 76px; object-fit: contain; z-index: 2; animation: jw-idle-bob 2600ms ease-in-out infinite;" />
+      <div style="position: absolute; left: 50%; top: 178px; width: 190px; height: 1px; transform: translateX(-50%); z-index: 3;">
+        <span style="position: absolute; left: 4%;  bottom: 0; width: 4px; height: 4px; border-radius: 50%; background: #FFD24A; box-shadow: 0 0 8px #FF7A00; --dx: -14px; animation: jw-ember 2000ms linear infinite; animation-delay: 0ms;"></span>
+        <span style="position: absolute; left: 16%; bottom: 0; width: 3px; height: 3px; border-radius: 50%; background: #FFAE2A; box-shadow: 0 0 8px #FF5A00; --dx: 10px;  animation: jw-ember 1650ms linear infinite; animation-delay: 220ms;"></span>
+        <span style="position: absolute; left: 29%; bottom: 0; width: 5px; height: 5px; border-radius: 50%; background: #FFE590; box-shadow: 0 0 10px #FF8A00; --dx: -8px;  animation: jw-ember 2300ms linear infinite; animation-delay: 500ms;"></span>
+        <span style="position: absolute; left: 41%; bottom: 0; width: 3px; height: 3px; border-radius: 50%; background: #FFD24A; box-shadow: 0 0 8px #FF7A00; --dx: 18px;  animation: jw-ember 1850ms linear infinite; animation-delay: 850ms;"></span>
+        <span style="position: absolute; left: 54%; bottom: 0; width: 4px; height: 4px; border-radius: 50%; background: #FFAE2A; box-shadow: 0 0 9px #FF5A00; --dx: -20px; animation: jw-ember 2150ms linear infinite; animation-delay: 130ms;"></span>
+        <span style="position: absolute; left: 67%; bottom: 0; width: 3px; height: 3px; border-radius: 50%; background: #FFE590; box-shadow: 0 0 8px #FF8A00; --dx: 9px;   animation: jw-ember 1750ms linear infinite; animation-delay: 610ms;"></span>
+        <span style="position: absolute; left: 80%; bottom: 0; width: 4px; height: 4px; border-radius: 50%; background: #FFD24A; box-shadow: 0 0 8px #FF7A00; --dx: -13px; animation: jw-ember 1950ms linear infinite; animation-delay: 340ms;"></span>
+        <span style="position: absolute; left: 92%; bottom: 0; width: 3px; height: 3px; border-radius: 50%; background: #FFAE2A; box-shadow: 0 0 8px #FF5A00; --dx: 16px;  animation: jw-ember 2200ms linear infinite; animation-delay: 720ms;"></span>
+      </div>
+    </div>
+
+    <div class="jw-grand-row" ref="{{ grandRowRef }}" style="position: absolute; left: 76px; top: 238px; width: 241px; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 12px; z-index: 5;">
+      <div style="display: flex; flex-direction: row; align-items: center; gap: 4px;">
+        <dotlottie-wc src="skin/icon_mega.lottie" autoplay loop style="width: 20px; height: 20px; flex-shrink: 0;"></dotlottie-wc>
+        <span style="font-family: Inter, sans-serif; font-weight: 600; font-size: 14px; line-height: 1.4; color: #FAD749;">Mega</span>
+      </div>
+      <div style="display: flex; flex-direction: row; align-items: center; gap: 4px; height: 38px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" style="flex-shrink: 0;"><path d="M6.5 9c0-1.4 2.5-2.5 5.5-2.5S17.5 7.6 17.5 9v8c0 1.4-2.5 2.5-5.5 2.5S6.5 18.4 6.5 17V9Z" fill="#B5A010"></path><ellipse cx="12" cy="9" rx="5.5" ry="2.5" fill="#FFE690"></ellipse><ellipse cx="12" cy="9" rx="4" ry="1.4" fill="#B5A010"></ellipse><path d="M9.6 12.6c.3-.5.9-.9 1.7-1v-.7h.9v.7c1 .1 1.8.7 1.8 1.6h-1.2c0-.3-.3-.6-.9-.7v1.6c1.2.2 2.1.7 2.1 1.7 0 .9-.9 1.6-2.1 1.7v.7h-.9v-.7c-1.1-.1-1.9-.7-1.9-1.7h1.2c0 .3.3.6.7.7v-1.7c-1.1-.2-1.9-.6-1.9-1.5 0-.2 0-.4.2-.6Zm1.7-.2c-.5.1-.7.3-.7.5s.2.4.7.5v-1Zm.9 2.8v1.1c.5-.1.8-.3.8-.6s-.3-.4-.8-.5Z" fill="#FFE690"></path></svg>
+        <span style="font-family: Inter, sans-serif; font-weight: 700; font-size: 32px; line-height: 1.2; color: #FAD749; letter-spacing: -0.5px;">R$ 1.851.956</span>
+      </div>
+    </div>
+
+    <div class="jw-tier-row" style="position: absolute; left: 31.5px; top: 311px; width: 330px; height: 56px; display: flex; flex-direction: row; z-index: 5;">
+      <div ref="{{ pillMajorRef }}" style="width: 110px; height: 56px; border-radius: 12px 0 0 12px; background: rgba(255,255,255,0.1); padding: 8px 12px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 5px; border-right: 1px solid rgba(0,0,0,0.4);">
+        <div style="display: flex; flex-direction: row; align-items: center; gap: 2px; height: 20px;">
+          <dotlottie-wc src="skin/icon_major.lottie" autoplay loop style="width: 20px; height: 20px; flex-shrink: 0;"></dotlottie-wc>
+          <span style="font-family: Inter, sans-serif; font-weight: 400; font-size: 14px; line-height: 1.4; color: #828282;">Major</span>
+        </div>
+        <span style="font-family: Inter, sans-serif; font-weight: 600; font-size: 14px; line-height: 1.4; color: #FFFFFF; align-self: stretch; text-align: center;">R$ 851.956</span>
+      </div>
+      <div ref="{{ pillMinorRef }}" style="width: 110px; height: 56px; background: rgba(255,255,255,0.1); padding: 8px 12px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 5px; border-right: 1px solid rgba(0,0,0,0.4);">
+        <div style="display: flex; flex-direction: row; align-items: center; gap: 2px; height: 20px;">
+          <dotlottie-wc src="skin/icon_minor.lottie" autoplay loop style="width: 20px; height: 20px; flex-shrink: 0;"></dotlottie-wc>
+          <span style="font-family: Inter, sans-serif; font-weight: 400; font-size: 14px; line-height: 1.4; color: #828282;">Minor</span>
+        </div>
+        <span style="font-family: Inter, sans-serif; font-weight: 600; font-size: 14px; line-height: 1.4; color: #FFFFFF; align-self: stretch; text-align: center;">R$ 51.956</span>
+      </div>
+      <div ref="{{ pillMiniRef }}" style="width: 110px; height: 56px; border-radius: 0 12px 12px 0; background: rgba(255,255,255,0.1); padding: 8px 12px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 5px;">
+        <div style="display: flex; flex-direction: row; align-items: center; gap: 2px; height: 20px;">
+          <dotlottie-wc src="skin/icon_mini.lottie" autoplay loop style="width: 20px; height: 20px; flex-shrink: 0;"></dotlottie-wc>
+          <span style="font-family: Inter, sans-serif; font-weight: 400; font-size: 14px; line-height: 1.4; color: #828282;">Mini</span>
+        </div>
+        <span style="font-family: Inter, sans-serif; font-weight: 600; font-size: 14px; line-height: 1.4; color: #FFFFFF; align-self: stretch; text-align: center;">R$ 1.956</span>
+      </div>
+    </div>
+    </div>
+
+    <div ref="{{ coinRainRef }}" style="position: absolute; left: 0; top: 0; width: 393px; height: 861px; overflow: hidden; pointer-events: none; z-index: 15;"></div>
+
+    <div class="jw-win-message" ref="{{ winMessageRef }}" style="position: absolute; left: 0; top: 70px; width: 393px; z-index: 6; display: flex; flex-direction: column; align-items: center; opacity: 0; pointer-events: none; transition: opacity 320ms cubic-bezier(0.2,0,0,1);">
+      <img class="jw-win-logo" ref="{{ winLogoRef }}" src="skin/image-88.png" alt="KTO Jackpot de Fogo" style="width: 170px; height: 50px; object-fit: contain; margin-bottom: 34px; transform: scale(1.8); opacity: 0; transition: transform 620ms cubic-bezier(0.2,0,0,1), opacity 400ms ease-out;" />
+      <span style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; width: 280px; min-height: 78px; padding: 0 8px; text-align: center; box-sizing: border-box;">
+        <span style="font-family: Inter, sans-serif; font-weight: 600; font-size: 15px; letter-spacing: 0.3px; text-transform: capitalize; color: #FFFFFF;">You Just Won The</span>
+        <span style="display: inline-block; animation: jw-title-levitate 2600ms ease-in-out infinite;">
+        <span style="display: inline-block; animation: jw-title-pulse 1800ms ease-in-out infinite;">
+        <span ref="{{ winTitleRef }}" style="display: inline-block; font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 32px; line-height: 0.9; letter-spacing: 0.3px; text-transform: uppercase; background-image: linear-gradient(100deg, #FAD749 35%, #FFFFFF 50%, #FAD749 65%); background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: #FAD749; animation: jw-shine 2400ms linear infinite;">Minor Jackpot</span>
+        </span>
+      </span>
+      </span>
+      <div ref="{{ winAmountRef }}" style="display: flex; flex-direction: row; align-items: center; margin-top: 8px;"></div>
+    </div>
+
+    <div ref="{{ wheelGroupRef }}" style="position: absolute; left: 0; top: 0; width: 393px; height: 861px; transform-origin: 197px 569px; transform: scale(1.12); z-index: 3;">
+    <div style="position: absolute; left: 17px; top: 389px; width: 360px; height: 360px;">
+
+      <div ref="{{ winFlashRef }}" style="position: absolute; left: 50%; top: 46%; width: 200px; height: 200px; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle, rgba(255,255,235,0.95) 0%, rgba(255,200,80,0.55) 40%, rgba(255,140,0,0) 72%); opacity: 0; pointer-events: none; z-index: 3;"></div>
+      <div ref="{{ haloRef }}" style="position: absolute; left: 50%; top: 50%; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle, rgba(255,120,0,0.3) 0%, rgba(218,0,0,0.14) 45%, rgba(0,0,0,0) 72%); transform: translate(-50%, -50%); opacity: 0; pointer-events: none;"></div>
+
+      <div ref="{{ sparksRef }}" style="position: absolute; left: 0; top: 0; width: 360px; height: 360px; opacity: 0; pointer-events: none; z-index: 2; transition: opacity 120ms linear;">
+        <span style="position: absolute; left: 346px; top: 178px; width: 4px; height: 4px; border-radius: 50%; background: #FFF6C8; box-shadow: 0 0 8px 2px #FFB020; animation: jw-spark-twinkle 480ms ease-in-out infinite 0ms;"></span>
+        <span style="position: absolute; left: 323.5px; top: 262px; width: 3px; height: 3px; border-radius: 50%; background: #FFE066; box-shadow: 0 0 7px 2px #FF8A00; animation: jw-spark-twinkle 560ms ease-in-out infinite 90ms;"></span>
+        <span style="position: absolute; left: 262px; top: 323.5px; width: 4px; height: 4px; border-radius: 50%; background: #FFF6C8; box-shadow: 0 0 8px 2px #FFB020; animation: jw-spark-twinkle 500ms ease-in-out infinite 180ms;"></span>
+        <span style="position: absolute; left: 178px; top: 346px; width: 3px; height: 3px; border-radius: 50%; background: #FFE066; box-shadow: 0 0 7px 2px #FF8A00; animation: jw-spark-twinkle 620ms ease-in-out infinite 60ms;"></span>
+        <span style="position: absolute; left: 94px; top: 323.5px; width: 4px; height: 4px; border-radius: 50%; background: #FFF6C8; box-shadow: 0 0 8px 2px #FFB020; animation: jw-spark-twinkle 540ms ease-in-out infinite 240ms;"></span>
+        <span style="position: absolute; left: 32.5px; top: 262px; width: 3px; height: 3px; border-radius: 50%; background: #FFE066; box-shadow: 0 0 7px 2px #FF8A00; animation: jw-spark-twinkle 580ms ease-in-out infinite 130ms;"></span>
+        <span style="position: absolute; left: 10px; top: 178px; width: 4px; height: 4px; border-radius: 50%; background: #FFF6C8; box-shadow: 0 0 8px 2px #FFB020; animation: jw-spark-twinkle 460ms ease-in-out infinite 310ms;"></span>
+        <span style="position: absolute; left: 32.5px; top: 94px; width: 3px; height: 3px; border-radius: 50%; background: #FFE066; box-shadow: 0 0 7px 2px #FF8A00; animation: jw-spark-twinkle 600ms ease-in-out infinite 20ms;"></span>
+        <span style="position: absolute; left: 94px; top: 32.5px; width: 4px; height: 4px; border-radius: 50%; background: #FFF6C8; box-shadow: 0 0 8px 2px #FFB020; animation: jw-spark-twinkle 520ms ease-in-out infinite 270ms;"></span>
+        <span style="position: absolute; left: 178px; top: 10px; width: 3px; height: 3px; border-radius: 50%; background: #FFE066; box-shadow: 0 0 7px 2px #FF8A00; animation: jw-spark-twinkle 560ms ease-in-out infinite 150ms;"></span>
+        <span style="position: absolute; left: 262px; top: 32.5px; width: 4px; height: 4px; border-radius: 50%; background: #FFF6C8; box-shadow: 0 0 8px 2px #FFB020; animation: jw-spark-twinkle 500ms ease-in-out infinite 350ms;"></span>
+        <span style="position: absolute; left: 323.5px; top: 94px; width: 3px; height: 3px; border-radius: 50%; background: #FFE066; box-shadow: 0 0 7px 2px #FF8A00; animation: jw-spark-twinkle 640ms ease-in-out infinite 40ms;"></span>
+        <span style="position: absolute; left: 228px; top: 178px; width: 3px; height: 3px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 0 6px 2px #FFC040; animation: jw-spark-twinkle 380ms ease-in-out infinite 10ms;"></span>
+        <span style="position: absolute; left: 203px; top: 221.3px; width: 3px; height: 3px; border-radius: 50%; background: #FFE066; box-shadow: 0 0 6px 2px #FF9A20; animation: jw-spark-twinkle 420ms ease-in-out infinite 220ms;"></span>
+        <span style="position: absolute; left: 153px; top: 221.3px; width: 3px; height: 3px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 0 6px 2px #FFC040; animation: jw-spark-twinkle 400ms ease-in-out infinite 300ms;"></span>
+        <span style="position: absolute; left: 128px; top: 178px; width: 3px; height: 3px; border-radius: 50%; background: #FFE066; box-shadow: 0 0 6px 2px #FF9A20; animation: jw-spark-twinkle 440ms ease-in-out infinite 80ms;"></span>
+        <span style="position: absolute; left: 153px; top: 134.7px; width: 3px; height: 3px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 0 6px 2px #FFC040; animation: jw-spark-twinkle 460ms ease-in-out infinite 190ms;"></span>
+        <span style="position: absolute; left: 203px; top: 134.7px; width: 3px; height: 3px; border-radius: 50%; background: #FFE066; box-shadow: 0 0 6px 2px #FF9A20; animation: jw-spark-twinkle 400ms ease-in-out infinite 260ms;"></span>
+      </div>
+
+      <div ref="{{ ringRef }}" style="position: absolute; left: 0; top: 0; width: 360px; height: 360px; will-change: transform;">
+        <img src="skin/wheel-base.png" alt="" style="position: absolute; left: 0; top: 0; width: 360px; height: 360px; object-fit: contain; filter: brightness(0.88) saturate(0.96) drop-shadow(0 12px 26px rgba(0,0,0,0.8));" />
+        <div style="position: absolute; left: 50%; top: 50%; width: 232px; height: 232px; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: inset 0 0 40px rgba(255,120,0,0.08);"></div>
+
+        <div class="jw-label" data-idx="0" data-key="mini" style="position: absolute; left: 50%; top: 50%; width: 40px; transform-origin: 0 0; transform: rotate(11.25deg) translateY(-98px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 15px; line-height: 0.95; letter-spacing: -0.2px; text-transform: uppercase; text-align: center; color: #000000;">Mini</div>
+        <div class="jw-label" data-idx="1" data-key="minor" style="position: absolute; left: 50%; top: 50%; width: 40px; transform-origin: 0 0; transform: rotate(33.75deg) translateY(-98px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 15px; line-height: 0.95; letter-spacing: -0.2px; text-transform: uppercase; text-align: center; color: #FAD749;">Minor</div>
+        <div class="jw-label" data-idx="2" data-key="major" style="position: absolute; left: 50%; top: 50%; width: 40px; transform-origin: 0 0; transform: rotate(56.25deg) translateY(-98px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 15px; line-height: 0.95; letter-spacing: -0.2px; text-transform: uppercase; text-align: center; color: #000000;">Major</div>
+        <div class="jw-label" data-idx="3" data-key="mega" style="position: absolute; left: 50%; top: 50%; width: 40px; transform-origin: 0 0; transform: rotate(78.75deg) translateY(-98px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 15px; line-height: 0.95; letter-spacing: -0.2px; text-transform: uppercase; text-align: center; color: #FAD749;">Mega</div>
+        <div class="jw-label" data-idx="4" data-key="nowin" style="position: absolute; left: 50%; top: 50%; width: 42px; transform-origin: 0 0; transform: rotate(101.25deg) translateY(-96px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 12px; line-height: 1; letter-spacing: -0.2px; text-transform: uppercase; text-align: center; color: #FFFFFF; white-space: nowrap;">No Win</div>
+        <div class="jw-label" data-idx="5" data-key="mini" style="position: absolute; left: 50%; top: 50%; width: 40px; transform-origin: 0 0; transform: rotate(123.75deg) translateY(-98px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 15px; line-height: 0.95; letter-spacing: -0.2px; text-transform: uppercase; text-align: center; color: #000000;">Mini</div>
+        <div class="jw-label" data-idx="6" data-key="minor" style="position: absolute; left: 50%; top: 50%; width: 40px; transform-origin: 0 0; transform: rotate(146.25deg) translateY(-98px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 15px; line-height: 0.95; letter-spacing: -0.2px; text-transform: uppercase; text-align: center; color: #FAD749;">Minor</div>
+        <div class="jw-label" data-idx="7" data-key="major" style="position: absolute; left: 50%; top: 50%; width: 40px; transform-origin: 0 0; transform: rotate(168.75deg) translateY(-98px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 15px; line-height: 0.95; letter-spacing: -0.2px; text-transform: uppercase; text-align: center; color: #000000;">Major</div>
+        <div class="jw-label" data-idx="8" data-key="mini" style="position: absolute; left: 50%; top: 50%; width: 40px; transform-origin: 0 0; transform: rotate(191.25deg) translateY(-98px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 15px; line-height: 0.95; letter-spacing: -0.2px; text-transform: uppercase; text-align: center; color: #000000;">Mini</div>
+        <div class="jw-label" data-idx="9" data-key="minor" style="position: absolute; left: 50%; top: 50%; width: 40px; transform-origin: 0 0; transform: rotate(213.75deg) translateY(-98px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 15px; line-height: 0.95; letter-spacing: -0.2px; text-transform: uppercase; text-align: center; color: #FAD749;">Minor</div>
+        <div class="jw-label" data-idx="10" data-key="major" style="position: absolute; left: 50%; top: 50%; width: 40px; transform-origin: 0 0; transform: rotate(236.25deg) translateY(-98px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 15px; line-height: 0.95; letter-spacing: -0.2px; text-transform: uppercase; text-align: center; color: #000000;">Major</div>
+        <div class="jw-label" data-idx="11" data-key="mega" style="position: absolute; left: 50%; top: 50%; width: 40px; transform-origin: 0 0; transform: rotate(258.75deg) translateY(-98px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 15px; line-height: 0.95; letter-spacing: -0.2px; text-transform: uppercase; text-align: center; color: #FAD749;">Mega</div>
+        <div class="jw-label" data-idx="12" data-key="nowin" style="position: absolute; left: 50%; top: 50%; width: 42px; transform-origin: 0 0; transform: rotate(281.25deg) translateY(-96px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 12px; line-height: 1; letter-spacing: -0.2px; text-transform: uppercase; text-align: center; color: #FFFFFF; white-space: nowrap;">No Win</div>
+        <div class="jw-label" data-idx="13" data-key="mini" style="position: absolute; left: 50%; top: 50%; width: 40px; transform-origin: 0 0; transform: rotate(303.75deg) translateY(-98px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 15px; line-height: 0.95; letter-spacing: -0.2px; text-transform: uppercase; text-align: center; color: #000000;">Mini</div>
+        <div class="jw-label" data-idx="14" data-key="minor" style="position: absolute; left: 50%; top: 50%; width: 40px; transform-origin: 0 0; transform: rotate(326.25deg) translateY(-98px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 15px; line-height: 0.95; letter-spacing: -0.2px; text-transform: uppercase; text-align: center; color: #FAD749;">Minor</div>
+        <div class="jw-label" data-idx="15" data-key="major" style="position: absolute; left: 50%; top: 50%; width: 40px; transform-origin: 0 0; transform: rotate(348.75deg) translateY(-98px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 15px; line-height: 0.95; letter-spacing: -0.2px; text-transform: uppercase; text-align: center; color: #000000;">Major</div>
+      </div>
+
+      <img src="skin/wheel-frame.png" alt="" style="position: absolute; left: 0; top: 0; width: 360px; height: 360px; object-fit: contain; pointer-events: none; z-index: 2; filter: drop-shadow(0 12px 26px rgba(0,0,0,0.8));" />
+
+      <div ref="{{ fireRef }}" style="position: absolute; left: 50%; top: 46%; width: 170px; height: 170px; transform: translate(-50%, -50%); background: radial-gradient(50% 50% at 50% 62%, rgba(255,214,90,0.9) 0%, rgba(255,120,0,0.55) 34%, rgba(218,0,0,0.22) 60%, rgba(0,0,0,0) 78%); mix-blend-mode: screen; filter: blur(6px); opacity: 0; animation: jw-flicker 900ms ease-in-out infinite; pointer-events: none;"></div>
+
+      <div ref="{{ countdownRef }}" style="position: absolute; left: 50%; top: 50%; width: 120px; height: 120px; transform: translate(-50%, -50%); border-radius: 50%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; z-index: 5;">
+        <span ref="{{ countdownNumRef }}" style="font-family: Inter, sans-serif; font-weight: 700; font-size: 56px; color: #FFE500; text-shadow: 0 0 20px rgba(255,150,0,0.8);">3</span>
+      </div>
+
+      <div ref="{{ embersRef }}" style="position: absolute; left: 50%; top: 218px; width: 130px; height: 1px; transform: translateX(-50%); opacity: 0; pointer-events: none;">
+        <span style="position: absolute; left: 6%;  bottom: 0; width: 4px; height: 4px; border-radius: 50%; background: #FFD24A; box-shadow: 0 0 8px #FF7A00; --dx: -16px; animation: jw-ember 2100ms linear infinite 0ms;"></span>
+        <span style="position: absolute; left: 20%; bottom: 0; width: 3px; height: 3px; border-radius: 50%; background: #FFAE2A; box-shadow: 0 0 8px #FF5A00; --dx: 12px;  animation: jw-ember 1750ms linear infinite 260ms;"></span>
+        <span style="position: absolute; left: 33%; bottom: 0; width: 5px; height: 5px; border-radius: 50%; background: #FFE590; box-shadow: 0 0 10px #FF8A00; --dx: -8px;  animation: jw-ember 2400ms linear infinite 520ms;"></span>
+        <span style="position: absolute; left: 47%; bottom: 0; width: 3px; height: 3px; border-radius: 50%; background: #FFD24A; box-shadow: 0 0 8px #FF7A00; --dx: 20px;  animation: jw-ember 1950ms linear infinite 140ms;"></span>
+        <span style="position: absolute; left: 58%; bottom: 0; width: 4px; height: 4px; border-radius: 50%; background: #FFAE2A; box-shadow: 0 0 9px #FF5A00; --dx: -22px; animation: jw-ember 2250ms linear infinite 700ms;"></span>
+        <span style="position: absolute; left: 71%; bottom: 0; width: 3px; height: 3px; border-radius: 50%; background: #FFE590; box-shadow: 0 0 8px #FF8A00; --dx: 10px;  animation: jw-ember 1850ms linear infinite 400ms;"></span>
+        <span style="position: absolute; left: 84%; bottom: 0; width: 4px; height: 4px; border-radius: 50%; background: #FFD24A; box-shadow: 0 0 8px #FF7A00; --dx: -14px; animation: jw-ember 2050ms linear infinite 900ms;"></span>
+        <span style="position: absolute; left: 94%; bottom: 0; width: 3px; height: 3px; border-radius: 50%; background: #FFAE2A; box-shadow: 0 0 8px #FF5A00; --dx: 18px;  animation: jw-ember 2300ms linear infinite 1150ms;"></span>
+      </div>
+    </div>
+
+    </div>
+
+    <div ref="{{ pointerWrapRef }}" style="position: absolute; left: 143px; top: 703px; width: 106px; height: 214px; z-index: 4; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));">
+      <img src="skin/marker.png" alt="" style="width: 100%; height: 100%; object-fit: contain; display: block;" />
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:393,&quot;height&quot;:852},&quot;winningTier&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Mini Jackpot&quot;,&quot;Minor Jackpot&quot;,&quot;Major Jackpot&quot;,&quot;Mega Jackpot&quot;],&quot;default&quot;:&quot;Mega Jackpot&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Outcome&quot;},&quot;stopStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Clean&quot;,&quot;Near-miss&quot;,&quot;Slow-motion tick&quot;],&quot;default&quot;:&quot;Near-miss&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;spinDuration&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:3200,&quot;max&quot;:9000,&quot;step&quot;:200,&quot;default&quot;:5400,&quot;unit&quot;:&quot;ms&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;autoSpin&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Outcome&quot;}}">
+const SECTOR_WIDTH = 22.5;
+const SECTORS = [
+  { key: "mini" }, { key: "minor" }, { key: "major" }, { key: "mega" }, { key: "nowin" },
+  { key: "mini" }, { key: "minor" }, { key: "major" },
+  { key: "mini" }, { key: "minor" }, { key: "major" }, { key: "mega" }, { key: "nowin" },
+  { key: "mini" }, { key: "minor" }, { key: "major" }
+].map((s, i) => ({ ...s, angle: i * SECTOR_WIDTH + SECTOR_WIDTH / 2 }));
+const TIER_INFO = {
+  mini:  { name: "Mini Jackpot",  amount: "R$ 1.956",     chest: "skin/icon_mini.png",  scale: 0.84, fire: 0.26, fireSize: 150, halo: 0.2 },
+  minor: { name: "Minor Jackpot", amount: "R$ 51.956",    chest: "skin/icon_minor.png", scale: 0.95, fire: 0.48, fireSize: 190, halo: 0.4 },
+  major: { name: "Major Jackpot", amount: "R$ 851.956",   chest: "skin/icon_major.png", scale: 1.06, fire: 0.7,  fireSize: 232, halo: 0.6 },
+  mega:  { name: "Mega Jackpot",  amount: "R$ 1.851.956", chest: "skin/icon_super.png", scale: 1.24, fire: 1.0,  fireSize: 300, halo: 1.0 },
+  nowin: { name: "No Win",        amount: "",              chest: "skin/icon_default.png", scale: 0.8, fire: 0, fireSize: 150, halo: 0 }
+};
+const SECTOR_WEIGHTS = { mini: 90, minor: 10, major: 9, mega: 1 };
+const CLOSED = "skin/icon_default.png";
+const IDLE_ROT = 45;
+
+class Component extends DCLogic {
+  ringRef = React.createRef();
+  chestRef = React.createRef();
+  chestImgRef = React.createRef();
+  fireRef = React.createRef();
+  haloRef = React.createRef();
+  sparksRef = React.createRef();
+  winFlashRef = React.createRef();
+  topContentRef = React.createRef();
+  winMessageRef = React.createRef();
+  winAmountRef = React.createRef();
+  winTitleRef = React.createRef();
+  coinRainRef = React.createRef();
+  coinsSoundRef = React.createRef();
+  reelSpinRef = React.createRef();
+  winLogoRef = React.createRef();
+  embersRef = React.createRef();
+  pointerWrapRef = React.createRef();
+  wheelGroupRef = React.createRef();
+  grandRowRef = React.createRef();
+  pillMajorRef = React.createRef();
+  pillMinorRef = React.createRef();
+  pillMiniRef = React.createRef();
+  musicRef = React.createRef();
+  countdownRef = React.createRef();
+  countdownNumRef = React.createRef();
+  rootRef = React.createRef();
+  phoneRef = React.createRef();
+  preloaderRef = React.createRef();
+  preloaderTextRef = React.createRef();
+  speakerOnRef = React.createRef();
+  speakerOffRef = React.createRef();
+  countdownAudioRef = React.createRef();
+  winLoopRef = React.createRef();
+
+  randomSpin = () => {
+    if (!this.assetsReady || this.phase === "spinning" || this.phase === "countdown") return;
+    this.target = this.weightedRandomSector();
+    this.spin();
+  };
+
+  weightedRandomSector() {
+    const total = Object.values(SECTOR_WEIGHTS).reduce((a, b) => a + b, 0);
+    let r = Math.random() * total;
+    let key = "mini";
+    for (const k of Object.keys(SECTOR_WEIGHTS)) {
+      if (r < SECTOR_WEIGHTS[k]) { key = k; break; }
+      r -= SECTOR_WEIGHTS[k];
+    }
+    const candidates = SECTORS.map((s, i) => i).filter(i => SECTORS[i].key === key);
+    return candidates[Math.floor(Math.random() * candidates.length)];
+  }
+
+  componentDidMount() {
+    this.rot = 0;
+    this.phase = "idle";
+    this.sector = -1;
+    this.target = this.tierIndex(this.props.winningTier);
+    this.applyIdle();
+
+    this.rescale = () => {
+      const root = this.rootRef.current, phone = this.phoneRef.current;
+      if (!root || !phone) return;
+      const w = root.clientWidth || 393;
+      const scale = w / 393;
+      phone.style.transform = "scale(" + scale + ")";
+    };
+    this.rescale();
+    if (window.ResizeObserver && this.rootRef.current) {
+      this._ro = new ResizeObserver(this.rescale);
+      this._ro.observe(this.rootRef.current);
+    } else {
+      window.addEventListener("resize", this.rescale);
+    }
+
+    this.mountTime = performance.now();
+    this.assetsReady = false;
+    this.preloadAssets(() => {
+      this.assetsReady = true;
+      this.ensureMusic();
+      this.unlockAudio = () => { this.unlockAllAudio(); this.ensureMusic(); };
+      window.addEventListener("pointerdown", this.unlockAudio, { once: true });
+      const elapsed = performance.now() - this.mountTime;
+      this.autoTimer = setTimeout(() => this.randomSpin(), Math.max(0, 4000 - elapsed));
+    });
+  }
+
+  preloadAssets(done) {
+    const images = [
+      "skin/wheel-base.png", "skin/wheel-frame.png", "skin/marker.png",
+      "skin/icon_default.png", "skin/icon_mini.png", "skin/icon_minor.png", "skin/icon_major.png", "skin/icon_super.png",
+      "skin/image-88.png",
+      "assets/coin0.png", "assets/coin1.png", "assets/coin2.png", "assets/coin3.png",
+      "assets/coin5.png", "assets/coin6.png", "assets/coin7.png", "assets/coin8.png", "assets/coin9.png", "assets/coin10.png"
+    ];
+    const audios = ["audio/suspense.wav", "audio/countdown-sine-wave-beeps.mp3", "audio/long-dramatic.mp3", "audio/coins-drop.wav", "audio/reel-spin.wav"];
+    const total = images.length + audios.length;
+    let loaded = 0;
+    const bump = () => {
+      loaded++;
+      const pct = Math.round((loaded / total) * 100);
+      if (this.preloaderTextRef.current) this.preloaderTextRef.current.textContent = "Loading… " + pct + "%";
+      if (loaded >= total) {
+        const el = this.preloaderRef.current;
+        if (el) {
+          el.style.opacity = "0";
+          el.style.pointerEvents = "none";
+          setTimeout(() => { el.style.display = "none"; }, 400);
+        }
+        done();
+      }
+    };
+    images.forEach(src => {
+      const img = new Image();
+      img.onload = bump;
+      img.onerror = bump;
+      img.src = src;
+    });
+    audios.forEach(src => {
+      const a = new Audio();
+      const finish = () => { a.oncanplaythrough = null; a.onerror = null; bump(); };
+      a.oncanplaythrough = finish;
+      a.onerror = finish;
+      a.src = src;
+      a.load();
+    });
+  }
+
+  componentWillUnmount() {
+    cancelAnimationFrame(this.raf);
+    clearTimeout(this.autoTimer);
+    clearTimeout(this.burstTimer);
+    clearTimeout(this.winFireTimer);
+    clearTimeout(this.winLoopTimer);
+    clearInterval(this.coinRainInterval);
+    clearTimeout(this.coinsSoundTimer);
+    this.stopReelSpinSound();
+    clearInterval(this.countdownTimer);
+    clearTimeout(this.musicRetryTimer);
+    window.removeEventListener("pointerdown", this.unlockAudio);
+    window.removeEventListener("resize", this.rescale);
+    if (this._ro) this._ro.disconnect();
+  }
+
+  tierIndex(name) {
+    const key = Object.keys(TIER_INFO).find(k => TIER_INFO[k].name === name || k === name) || "mega";
+    const i = SECTORS.findIndex(s => s.key === key);
+    return i < 0 ? 0 : i;
+  }
+
+  labelEls() {
+    return this.ringRef.current ? Array.from(this.ringRef.current.querySelectorAll(".jw-label")) : [];
+  }
+
+  applyIdle() {
+    this.stopReelSpinSound();
+    clearInterval(this.countdownTimer);
+    clearTimeout(this.winLoopTimer);
+    this.stopCountdownSound();
+    this.stopWinLoop();
+    this.hideWinMessage();
+    this.clearCoinRain();
+    if (this.countdownRef.current) this.countdownRef.current.style.opacity = "0";
+    const img = this.chestImgRef.current;
+    const chest = this.chestRef.current;
+    if (img) img.src = CLOSED;
+    if (chest) {
+      chest.style.transition = "transform 260ms cubic-bezier(0.2,0,0,1)";
+      chest.style.transform = "scale(0.92)";
+      chest.style.animation = "jw-idle-bob 2600ms ease-in-out infinite";
+    }
+    this.setFire(0, 160);
+    this.setHalo(0);
+    if (this.embersRef.current) this.embersRef.current.style.opacity = "0";
+    if (this.sparksRef.current) this.sparksRef.current.style.opacity = "0";
+    if (this.ringRef.current) {
+      this.ringRef.current.style.filter = "none";
+      this.ringRef.current.style.opacity = "1";
+      this.ringRef.current.style.transform = "rotate(" + IDLE_ROT + "deg)";
+    }
+    if (this.pointerWrapRef.current) {
+      this.pointerWrapRef.current.style.transition = "opacity 320ms cubic-bezier(0.2,0,0,1)";
+      this.pointerWrapRef.current.style.opacity = "1";
+    }
+    this.setGroup(true);
+    this.clearHighlights();
+    this.labelEls().forEach(el => { el.style.opacity = "1"; });
+  }
+
+  setFire(intensity, size) {
+    const el = this.fireRef.current;
+    if (!el) return;
+    el.style.width = size + "px";
+    el.style.height = size + "px";
+    el.style.opacity = String(intensity);
+    el.style.animationDuration = (1200 - 380 * intensity) + "ms";
+  }
+
+  setHalo(v) {
+    const el = this.haloRef.current;
+    if (!el) return;
+    el.style.transition = "opacity 420ms cubic-bezier(0.2,0,0,1)";
+    el.style.opacity = String(v * 0.9);
+    el.style.animation = v > 0 ? "jw-halo 2400ms ease-in-out infinite" : "none";
+  }
+
+  setGroup() {}
+
+  clearHighlights() {
+    [this.pillMajorRef, this.pillMinorRef, this.pillMiniRef].forEach(r => {
+      if (r.current) {
+        r.current.style.transition = "background 220ms cubic-bezier(0.2,0,0,1), box-shadow 220ms cubic-bezier(0.2,0,0,1)";
+        r.current.style.background = "rgba(255,255,255,0.1)";
+        r.current.style.boxShadow = "none";
+      }
+    });
+    if (this.grandRowRef.current) {
+      this.grandRowRef.current.style.transition = "background 220ms cubic-bezier(0.2,0,0,1)";
+      this.grandRowRef.current.style.background = "transparent";
+    }
+  }
+
+  highlightTier(key) {
+    this.clearHighlights();
+    if (key === "mega") return;
+    const r = { major: this.pillMajorRef, minor: this.pillMinorRef, mini: this.pillMiniRef }[key];
+    if (r && r.current) {
+      r.current.style.background = "rgba(250,215,73,0.16)";
+      r.current.style.boxShadow = "inset 0 0 0 1px rgba(250,215,73,0.55)";
+    }
+  }
+
+  applySector(i, burst) {
+    if (i === this.sector && !burst) return;
+    this.sector = i;
+    const t = TIER_INFO[SECTORS[i].key];
+    const img = this.chestImgRef.current;
+    const chest = this.chestRef.current;
+    if (img) img.src = t.chest;
+    if (chest) {
+      chest.style.animation = "none";
+      if (burst) {
+        clearTimeout(this.burstTimer);
+        const s = t.scale;
+        const steps = [
+          [80,  s * 0.78],
+          [190, s * 1.4],
+          [140, s * 0.88],
+          [150, s * 1.18],
+          [150, s * 0.94],
+          [140, s * 1.06],
+          [160, s]
+        ];
+        let elapsed = 0;
+        steps.forEach(([dur, scale], idx) => {
+          elapsed += idx === 0 ? 0 : steps[idx - 1][0];
+          setTimeout(() => {
+            if (!chest) return;
+            chest.style.transition = "transform " + dur + "ms cubic-bezier(0.34,1.56,0.64,1)";
+            chest.style.transform = "scale(" + scale.toFixed(3) + ")";
+          }, elapsed);
+        });
+      } else {
+        chest.style.transition = "transform 90ms cubic-bezier(0.2,0,0,1)";
+        chest.style.transform = "scale(" + t.scale + ")";
+      }
+    }
+    this.setFire(t.fire, t.fireSize);
+    if (this.embersRef.current) this.embersRef.current.style.opacity = String(0.4 + 0.6 * t.fire);
+  }
+
+  showWinMessage(t) {
+    if (this.topContentRef.current) {
+      this.topContentRef.current.style.opacity = "0";
+      this.topContentRef.current.style.pointerEvents = "none";
+    }
+    if (this.winMessageRef.current) {
+      this.winMessageRef.current.style.opacity = "1";
+      this.winMessageRef.current.style.pointerEvents = "auto";
+    }
+    if (this.winLogoRef.current) {
+      const logo = this.winLogoRef.current;
+      logo.style.transition = "none";
+      logo.style.transform = "scale(1.8)";
+      logo.style.opacity = "0";
+      void logo.offsetWidth;
+      logo.style.transition = "transform 620ms cubic-bezier(0.2,0,0,1), opacity 400ms ease-out";
+      logo.style.transform = "scale(1)";
+      logo.style.opacity = "1";
+    }
+    if (this.winTitleRef.current) {
+      const title = this.winTitleRef.current;
+      title.textContent = t.name;
+      title.style.animation = "none";
+      void title.offsetWidth;
+      title.style.animation = "jw-title-pop 620ms cubic-bezier(0.2,0,0,1), jw-shine 2400ms linear infinite 620ms";
+    }
+    this.buildFlipAmount(t.amount);
+  }
+
+  hideWinMessage() {
+    if (this.topContentRef.current) {
+      this.topContentRef.current.style.opacity = "1";
+      this.topContentRef.current.style.pointerEvents = "auto";
+    }
+    if (this.winMessageRef.current) {
+      this.winMessageRef.current.style.opacity = "0";
+      this.winMessageRef.current.style.pointerEvents = "none";
+    }
+  }
+
+  buildFlipAmount(amount) {
+    const host = this.winAmountRef.current;
+    if (!host) return;
+    host.innerHTML = "";
+    const H = 40;
+    const chars = amount.split("");
+    const loops = 4;
+    chars.forEach((ch, i) => {
+      if (/[0-9]/.test(ch)) {
+        const digit = parseInt(ch, 10);
+        const landIndex = (loops - 1) * 10 + digit;
+        const reelWrap = document.createElement("span");
+        reelWrap.style.cssText = "display:inline-block;overflow:hidden;height:" + H + "px;width:22px;vertical-align:top;position:relative;";
+        const reel = document.createElement("span");
+        const dur = 1500 + i * 90;
+        const delay = i * 110;
+        reel.style.cssText = "display:block;transform:translateY(0px);transition:transform " + dur + "ms steps(" + landIndex + ") " + delay + "ms;";
+        const sequence = [];
+        for (let l = 0; l < loops; l++) for (let d = 0; d <= 9; d++) sequence.push(d);
+        sequence.forEach(d => {
+          const cell = document.createElement("span");
+          cell.textContent = String(d);
+          cell.style.cssText = "display:block;height:" + H + "px;line-height:" + H + "px;font-family:Inter, sans-serif;font-weight:700;font-size:32px;color:#FAD749;text-align:center;letter-spacing:-0.5px;";
+          reel.appendChild(cell);
+        });
+        reelWrap.appendChild(reel);
+        host.appendChild(reelWrap);
+        requestAnimationFrame(() => {
+          reel.style.transform = "translateY(-" + (landIndex * H) + "px)";
+        });
+      } else {
+        const span = document.createElement("span");
+        span.textContent = ch === " " ? "\u00A0" : ch;
+        span.style.cssText = "display:inline-block;height:" + H + "px;line-height:" + H + "px;font-family:Inter, sans-serif;font-weight:700;font-size:32px;color:#FAD749;letter-spacing:-0.5px;";
+        host.appendChild(span);
+      }
+    });
+  }
+
+  spawnCoinBatch(count) {
+    const host = this.coinRainRef.current;
+    if (!host) return;
+    const coins = ["coin0","coin1","coin2","coin3","coin5","coin6","coin7","coin8","coin9","coin10"];
+    for (let i = 0; i < count; i++) {
+      const img = document.createElement("img");
+      img.src = "assets/" + coins[Math.floor(Math.random() * coins.length)] + ".png";
+      const size = 22 + Math.random() * 22;
+      const left = Math.random() * 393;
+      const drift = (Math.random() - 0.5) * 120;
+      const spin = (Math.random() > 0.5 ? 1 : -1) * (360 + Math.random() * 540);
+      const duration = 1300 + Math.random() * 900;
+      const delay = Math.random() * 300;
+      img.style.cssText = "position:absolute;left:" + left + "px;top:-40px;width:" + size + "px;height:" + size + "px;object-fit:contain;--drift:" + drift.toFixed(0) + "px;--spin:" + spin.toFixed(0) + "deg;animation:jw-coin-fall " + duration.toFixed(0) + "ms cubic-bezier(0.3,0.1,0.6,1) " + delay.toFixed(0) + "ms forwards;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.4));";
+      host.appendChild(img);
+      setTimeout(() => { if (img.parentNode) img.parentNode.removeChild(img); }, duration + delay + 200);
+    }
+  }
+
+  spawnCoinRain(intensity) {
+    const perBatch = Math.round(5 + intensity * 5);
+    this.spawnCoinBatch(perBatch * 2);
+    this.playCoinsSound();
+    clearInterval(this.coinRainInterval);
+    let elapsed = 0;
+    this.coinRainInterval = setInterval(() => {
+      elapsed += 350;
+      this.spawnCoinBatch(perBatch);
+      if (elapsed >= 5000) clearInterval(this.coinRainInterval);
+    }, 350);
+    clearTimeout(this.coinsSoundTimer);
+    this.coinsSoundTimer = setTimeout(() => this.stopCoinsSound(), 5400);
+  }
+
+  playReelSpinSound() {
+    const el = this.reelSpinRef.current;
+    if (!el || this.musicMuted) return;
+    el.loop = true;
+    el.volume = 0.7;
+    el.currentTime = 0;
+    el.play().catch(() => {});
+  }
+
+  stopReelSpinSound() {
+    const el = this.reelSpinRef.current;
+    if (el) { el.pause(); el.currentTime = 0; }
+  }
+
+  unlockAllAudio() {
+    [this.musicRef, this.coinsSoundRef, this.reelSpinRef, this.winLoopRef, this.countdownAudioRef].forEach(ref => {
+      const el = ref.current;
+      if (!el) return;
+      const prevMuted = el.muted;
+      el.muted = true;
+      el.play().then(() => {
+        el.pause();
+        el.currentTime = 0;
+        el.muted = prevMuted;
+      }).catch(() => { el.muted = prevMuted; });
+    });
+  }
+
+  playCoinsSound() {
+    const el = this.coinsSoundRef.current;
+    if (!el || this.musicMuted) return;
+    el.volume = 0.6;
+    el.currentTime = 0;
+    el.play().catch(() => {});
+  }
+
+  stopCoinsSound() {
+    const el = this.coinsSoundRef.current;
+    if (el) { el.pause(); el.currentTime = 0; }
+  }
+
+  clearCoinRain() {
+    clearInterval(this.coinRainInterval);
+    clearTimeout(this.coinsSoundTimer);
+    this.stopCoinsSound();
+    if (this.coinRainRef.current) this.coinRainRef.current.innerHTML = "";
+  }
+
+  playWinBurst(t) {
+    const flash = this.winFlashRef.current;
+    if (flash) {
+      flash.style.animation = "none";
+      void flash.offsetWidth;
+      flash.style.animation = "jw-win-flash 700ms cubic-bezier(0.2,0,0,1) forwards";
+    }
+    this.setFire(Math.min(1.4, t.fire * 1.5), t.fireSize * 1.25);
+    clearTimeout(this.winFireTimer);
+    this.winFireTimer = setTimeout(() => this.setFire(t.fire, t.fireSize), 520);
+  }
+
+  stopMusic() {
+    const el = this.musicRef.current;
+    if (el) el.pause();
+  }
+
+  ensureMusic() {
+    const el = this.musicRef.current;
+    if (!el || this.musicMuted) return;
+    el.volume = 0.55;
+    const tryPlay = () => {
+      el.play().catch(() => {
+        clearTimeout(this.musicRetryTimer);
+        this.musicRetryTimer = setTimeout(() => this.ensureMusic(), 800);
+      });
+    };
+    if (el.readyState >= 2) {
+      if (el.paused) tryPlay();
+    } else {
+      el.addEventListener("canplaythrough", tryPlay, { once: true });
+      el.addEventListener("error", () => {
+        clearTimeout(this.musicRetryTimer);
+        this.musicRetryTimer = setTimeout(() => {
+          el.load();
+          this.ensureMusic();
+        }, 1000);
+      }, { once: true });
+      el.load();
+    }
+  }
+
+  playCountdownSound() {
+    const el = this.countdownAudioRef.current;
+    if (!el || this.musicMuted) return;
+    el.volume = 0.8;
+    el.currentTime = 0;
+    el.play().catch(() => {});
+  }
+
+  stopCountdownSound() {
+    const el = this.countdownAudioRef.current;
+    if (!el) return;
+    el.pause();
+    el.currentTime = 0;
+  }
+
+  playWinLoop() {
+    this.stopMusic();
+    const el = this.winLoopRef.current;
+    if (!el || this.musicMuted) return;
+    el.volume = 0.7;
+    el.currentTime = 0;
+    el.play().catch(() => {});
+  }
+
+  stopWinLoop() {
+    const el = this.winLoopRef.current;
+    if (el) {
+      el.pause();
+      el.currentTime = 0;
+    }
+    this.ensureMusic();
+  }
+
+  toggleMusic() {
+    this.musicMuted = !this.musicMuted;
+    const el = this.musicRef.current;
+    if (el) {
+      if (this.musicMuted) el.pause();
+      else el.play().catch(() => {});
+    }
+    const win = this.winLoopRef.current;
+    if (win) {
+      if (this.musicMuted) win.pause();
+      else if (this.phase === "result") win.play().catch(() => {});
+    }
+    if (this.speakerOnRef.current) this.speakerOnRef.current.style.display = this.musicMuted ? "none" : "block";
+    if (this.speakerOffRef.current) this.speakerOffRef.current.style.display = this.musicMuted ? "block" : "none";
+  }
+
+  spin() {
+    if (!this.assetsReady || this.phase === "spinning" || this.phase === "countdown") return;
+    if (this.phase !== "idle") this.applyIdle();
+    this.ensureMusic();
+    clearTimeout(this.autoTimer);
+    this.phase = "countdown";
+    let n = 3;
+    if (this.countdownNumRef.current) this.countdownNumRef.current.textContent = String(n);
+    if (this.countdownRef.current) {
+      this.countdownRef.current.style.transition = "opacity 200ms cubic-bezier(0.2,0,0,1)";
+      this.countdownRef.current.style.opacity = "1";
+    }
+    this.playCountdownSound();
+    clearInterval(this.countdownTimer);
+    this.countdownTimer = setInterval(() => {
+      n -= 1;
+      if (n <= 0) {
+        clearInterval(this.countdownTimer);
+        if (this.countdownRef.current) this.countdownRef.current.style.opacity = "0";
+        this.runSpin();
+        return;
+      }
+      if (this.countdownNumRef.current) this.countdownNumRef.current.textContent = String(n);
+    }, 1000);
+  }
+
+  runSpin() {
+    this.phase = "spinning";
+    this.sector = -1;
+    this.setGroup(false);
+    this.clearHighlights();
+    this.setHalo(0);
+
+    const img = this.chestImgRef.current;
+    const chest = this.chestRef.current;
+    if (img) img.src = CLOSED;
+    if (chest) {
+      chest.style.animation = "none";
+      chest.style.transition = "transform 200ms cubic-bezier(0.2,0,0,1)";
+      chest.style.transform = "scale(0.9)";
+    }
+    this.setFire(0, 150);
+    if (this.embersRef.current) this.embersRef.current.style.opacity = "0";
+    if (this.pointerWrapRef.current) this.pointerWrapRef.current.style.opacity = "1";
+    this.labelEls().forEach(el => { el.style.transition = "opacity 300ms cubic-bezier(0.2,0,0,1)"; el.style.opacity = "1"; });
+
+    const style = this.props.stopStyle || "Near-miss";
+    const total = Math.max(3200, Number(this.props.spinDuration) || 5400);
+    clearTimeout(this.winLoopTimer);
+    this.winLoopTimer = setTimeout(() => this.playWinLoop(), Math.max(0, total - 1000));
+    const wMax = 1280;
+    const tUp = 520;
+    const tSettle = 620;
+    const rest = total - tUp - tSettle;
+    const tCruise = Math.round(rest * 0.42);
+    const tDecel = rest - tCruise;
+    const tail = style === "Slow-motion tick" ? 64 : style === "Near-miss" ? 27 : 0;
+    const tTail = tail === 0 ? 0 : Math.round(tDecel * (style === "Slow-motion tick" ? 0.4 : 0.26));
+    const tMain = tDecel - tTail;
+
+    const start = IDLE_ROT;
+    const aUp = 0.5 * wMax * (tUp / 1000);
+    const aCruise = wMax * (tCruise / 1000);
+    const theta = (180 - SECTORS[this.target].angle + 360) % 360;
+    const guess = aUp + aCruise + wMax * (tMain / 1000) / 3.1;
+    const turns = Math.max(3, Math.round((guess - theta) / 360));
+    const totalAngle = 360 * turns + theta;
+    const aDecel = (totalAngle - start) - aUp - aCruise;
+    const aMain = Math.max(120, aDecel - tail);
+
+    this.segs = [
+      { d: tUp,     a: aUp,     from: start,                     e: p => p * p },
+      { d: tCruise, a: aCruise, from: start + aUp,                e: p => p },
+      { d: tMain,   a: aMain,   from: start + aUp + aCruise,      e: p => 1 - Math.pow(1 - p, 3.1) },
+      { d: tTail,   a: tail,    from: start + aUp + aCruise + aMain, e: p => 1 - Math.pow(1 - p, 1.7) },
+      { d: tSettle, a: 0,       from: totalAngle,                e: p => p, wobble: true }
+    ].filter(s => s.d > 0);
+
+    this.t0 = performance.now();
+    this.totalAngle = totalAngle;
+    this.playReelSpinSound();
+    cancelAnimationFrame(this.raf);
+    this.tick();
+  }
+
+  tick = () => {
+    const now = performance.now();
+    let el = now - this.t0;
+    let angle = this.totalAngle;
+    let omega = 0;
+    let done = true;
+
+    for (let i = 0; i < this.segs.length; i++) {
+      const s = this.segs[i];
+      if (el < s.d) {
+        const p = el / s.d;
+        if (s.wobble) {
+          angle = this.totalAngle + 4.2 * Math.exp(-el / 150) * Math.cos(el / 52);
+          omega = 0;
+        } else {
+          angle = s.from + s.a * s.e(p);
+          const pn = Math.min(1, p + 0.008);
+          omega = (s.a * (s.e(pn) - s.e(p))) / (0.008 * s.d / 1000);
+        }
+        done = false;
+        break;
+      }
+      el -= s.d;
+    }
+
+    this.rot = angle;
+    if (this.ringRef.current) {
+      this.ringRef.current.style.transform = "rotate(" + angle + "deg)";
+      const b = omega > 900 ? Math.min(2.4, (omega - 900) / 260) : 0;
+      this.ringRef.current.style.filter = b > 0.05 ? "blur(" + b.toFixed(2) + "px)" : "none";
+    }
+    if (this.sparksRef.current) {
+      const intensity = Math.max(0, Math.min(1, (omega - 150) / 1500));
+      this.sparksRef.current.style.opacity = String(intensity);
+    }
+
+    if (!done) {
+      if (omega > 620) {
+        if (this.sector !== -1) {
+          this.sector = -1;
+          if (this.chestImgRef.current) this.chestImgRef.current.src = CLOSED;
+          this.setFire(0, 150);
+        }
+        const chest = this.chestRef.current;
+        if (chest) {
+          const j = Math.sin(now / 34) * Math.min(2.6, omega / 480);
+          chest.style.transition = "none";
+          chest.style.transform = "scale(0.9) translate(" + j.toFixed(2) + "px, " + (j * 0.4).toFixed(2) + "px)";
+        }
+      } else {
+        const idx = ((Math.floor(((180 - angle) % 360 + 360) % 360 / SECTOR_WIDTH) % SECTORS.length) + SECTORS.length) % SECTORS.length;
+        this.applySector(idx);
+      }
+      this.raf = requestAnimationFrame(this.tick);
+      return;
+    }
+
+    this.land();
+  };
+
+  land() {
+    this.phase = "result";
+    this.stopReelSpinSound();
+    if (this.ringRef.current) {
+      this.ringRef.current.style.transform = "rotate(" + this.totalAngle + "deg)";
+      this.ringRef.current.style.filter = "none";
+    }
+    if (this.sparksRef.current) this.sparksRef.current.style.opacity = "0";
+    const key = SECTORS[this.target].key;
+    const t = TIER_INFO[key];
+    this.setGroup(true);
+    this.applySector(this.target, true);
+    this.setHalo(t.halo);
+    this.highlightTier(key);
+    this.playWinBurst(t);
+    this.showWinMessage(t);
+    this.spawnCoinRain(t.fire);
+
+    this.labelEls().forEach(el => {
+      el.style.transition = "opacity 460ms cubic-bezier(0.2,0,0,1)";
+      const won = Number(el.dataset.idx) === this.target;
+      el.style.opacity = won ? "1" : "0.18";
+    });
+    if (this.pointerWrapRef.current) this.pointerWrapRef.current.style.opacity = "0.14";
+  }
+
+  renderVals() {
+    return {
+      rootRef: this.rootRef,
+      ringRef: this.ringRef,
+      phoneRef: this.phoneRef,
+      chestRef: this.chestRef,
+      chestImgRef: this.chestImgRef,
+      fireRef: this.fireRef,
+      haloRef: this.haloRef,
+      sparksRef: this.sparksRef,
+      winFlashRef: this.winFlashRef,
+      topContentRef: this.topContentRef,
+      winMessageRef: this.winMessageRef,
+      winAmountRef: this.winAmountRef,
+      winTitleRef: this.winTitleRef,
+      winLogoRef: this.winLogoRef,
+      coinRainRef: this.coinRainRef,
+      coinsSoundRef: this.coinsSoundRef,
+      reelSpinRef: this.reelSpinRef,
+      embersRef: this.embersRef,
+      pointerWrapRef: this.pointerWrapRef,
+      wheelGroupRef: this.wheelGroupRef,
+      grandRowRef: this.grandRowRef,
+      pillMajorRef: this.pillMajorRef,
+      pillMinorRef: this.pillMinorRef,
+      pillMiniRef: this.pillMiniRef,
+      onSpin: () => this.spin(),
+      onRandomSpin: this.randomSpin,
+      countdownRef: this.countdownRef,
+      countdownNumRef: this.countdownNumRef,
+      preloaderRef: this.preloaderRef,
+      preloaderTextRef: this.preloaderTextRef,
+      countdownAudioRef: this.countdownAudioRef,
+      winLoopRef: this.winLoopRef,
+      musicRef: this.musicRef,
+      speakerOnRef: this.speakerOnRef,
+      speakerOffRef: this.speakerOffRef,
+      onToggleMusic: () => this.toggleMusic()
+    };
+  }
+}
+</script>
+</body>
+</html>

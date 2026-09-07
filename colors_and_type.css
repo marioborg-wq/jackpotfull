@@ -1,0 +1,260 @@
+/* ============================================================
+   KTO — Design Tokens (CSS)
+   Source: Figma "Multi Brand Design System" → Design Tokens page.
+   System name: ACE (Atomic Components Ecosystem).
+   ============================================================ */
+
+/* -------- Fonts -------- */
+/*  NN Swinton STD Heavy Italic — the brand display face (Newlyn).
+    Self-hosted from /fonts.  Inter — body face (Google).
+    Geist Mono — mono face (jsDelivr).
+*/
+@font-face {
+  font-family: "NN Swinton STD";
+  src: url("./fonts/NNSwintonSTD-HeavyItalic.woff") format("woff");
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-mono/style.css");
+
+:root {
+  /* ---------- Brand palette (kto.color.*) ---------- */
+  --kto-red:           #DA0000;   /* brand.color.main.primary */
+  --kto-yellow:        #FAD749;   /* brand.color.main.secondary */
+  --kto-green:         #00DD70;   /* brand.color.main.highlight */
+
+  --kto-red-deep:      #900000;   /* color.red-deep */
+
+  /* Support / vertical colors (per product surface) */
+  --kto-sports:        #218AFB;   /* casino, sports, etc. */
+  --kto-sports-deep:   #0066FF;
+  --kto-casino:        #00DD70;
+  --kto-casino-deep:   #03A700;
+  --kto-live-casino:   #900000;
+  --kto-criar-aposta:  #00CED5;
+  --kto-virtual-sports:#00A097;
+  --kto-vip:           #B5A010;
+
+  /* Feedback */
+  --kto-error:         #FF66DE;
+  --kto-error-deep:    #990078;
+  --kto-error-light:   #FFB2EE;
+  --kto-warning:       #FA9600;
+  --kto-warning-deep:  #804D00;
+  --kto-warning-light: #FFD699;
+  --kto-info:          #00D59C;
+  --kto-info-deep:     #006147;
+  --kto-info-light:    #B2FCFF;
+
+  /* Neutrals — dark-first */
+  --kto-black:         #000000;   /* neutral.low */
+  --kto-neutral-100:   #1E1E1E;
+  --kto-neutral-200:   #323232;
+  --kto-neutral-300:   #3C3C3C;
+  --kto-neutral-400:   #5A5A5A;
+  --kto-neutral-500:   #828282;
+  --kto-neutral-600:   #9B9B9B;
+  --kto-neutral-700:   #BDBDBD;
+  --kto-neutral-800:   #D9D9D9;
+  --kto-neutral-900:   #EEEEEE;
+  --kto-white:         #FFFFFF;
+
+  /* ---------- Semantic surface tokens (dark theme default) ---------- */
+  --bg:                var(--kto-black);
+  --bg-elevated:       var(--kto-neutral-100);
+  --bg-card:           var(--kto-neutral-200);
+  --bg-input:          var(--kto-neutral-300);
+  --bg-overlay:        rgba(0, 0, 0, 0.72);
+
+  --fg:                var(--kto-white);
+  --fg-muted:          var(--kto-neutral-600);   /* #9B9B9B labels & hints */
+  --fg-subtle:         var(--kto-neutral-500);   /* #828282 secondary */
+  --fg-disabled:       var(--kto-neutral-400);
+  --fg-on-yellow:      var(--kto-black);
+  --fg-on-green:       var(--kto-black);
+  --fg-on-red:         var(--kto-white);
+
+  --stroke:            var(--kto-neutral-300);
+  --stroke-strong:     var(--kto-neutral-400);
+  --stroke-subtle:     rgba(255, 255, 255, 0.10);
+
+  /* CTA semantic — KTO's main CTA is green (highlight), not red */
+  --cta-bg:            var(--kto-green);
+  --cta-fg:            var(--kto-black);
+  --cta-bg-hover:      #00C264;
+  --cta-bg-pressed:    #03A700;
+  --cta-bg-disabled:   var(--kto-neutral-300);
+  --cta-fg-disabled:   var(--kto-neutral-500);
+
+  /* Secondary CTA — yellow */
+  --cta2-bg:           var(--kto-yellow);
+  --cta2-fg:           var(--kto-black);
+
+  /* Negative / destructive CTA — red coral */
+  --cta-neg-bg:        #FF6D6D;
+  --cta-neg-fg:        var(--kto-black);
+
+  /* ---------- Type families ---------- */
+  --font-display:      "NN Swinton STD", "Anton", "Bebas Neue", "Impact", sans-serif;
+  --font-body:         "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono:         "Geist Mono", "Fira Code", "JetBrains Mono", ui-monospace, Menlo, monospace;
+
+  /* ---------- Font size scale (global.fontSize) ---------- */
+  --fs-6:              0.375rem;   /* 6px  */
+  --fs-8:              0.5rem;     /* 8    */
+  --fs-10:             0.625rem;   /* 10  — subtitle.sm */
+  --fs-12:             0.75rem;    /* 12  — subtitle.lg */
+  --fs-14:             0.875rem;   /* 14  — paragraph.sm */
+  --fs-16:             1rem;       /* 16  — paragraph.md */
+  --fs-18:             1.125rem;   /* 18  — paragraph.lg / header.sm */
+  --fs-20:             1.25rem;    /* 20  — header.md */
+  --fs-24:             1.5rem;     /* 24  — header.lg */
+  --fs-32:             2rem;       /* 32  — header.xl */
+  --fs-40:             2.5rem;     /* 40  — header.2xl */
+  --fs-48:             3rem;       /* 48  — header.3xl */
+  --fs-56:             3.5rem;     /* 56  — header.4xl */
+  --fs-72:             4.5rem;     /* 72  — display */
+
+  /* ---------- Font weights ---------- */
+  --fw-regular:        400;
+  --fw-medium:         500;
+  --fw-semibold:       600;
+  --fw-bold:           700;
+  --fw-display:        800;   /* NN Swinton STD Heavy Italic */
+
+  /* ---------- Line height ---------- */
+  --lh-xs:             1.10;
+  --lh-sm:             1.15;
+  --lh-md:             1.30;
+  --lh-lg:             1.45;
+  --lh-xl:             1.80;
+
+  /* ---------- Spacing scale (px) ---------- */
+  --sp-2:              2px;
+  --sp-4:              4px;
+  --sp-8:              8px;
+  --sp-12:             12px;
+  --sp-16:             16px;
+  --sp-24:             24px;
+  --sp-32:             32px;
+  --sp-40:             40px;
+  --sp-48:             48px;
+  --sp-64:             64px;
+  --sp-80:             80px;
+
+  /* ---------- Border radius ---------- */
+  --r-xs:              3px;
+  --r-sm:              6px;
+  --r-md:              12px;   /* default — buttons, inputs, cards */
+  --r-lg:              18px;
+  --r-xl:              32px;
+  --r-full:            9999px;
+
+  /* ---------- Border width ---------- */
+  --bw-hairline:       1px;
+  --bw-thin:           2px;
+  --bw-bold:           4px;
+  --bw-heavy:          8px;
+
+  /* ---------- Opacity ---------- */
+  --op-semi-opaque:        0.72;
+  --op-intense:            0.64;
+  --op-half:               0.50;
+  --op-light:              0.32;
+  --op-lighter:            0.16;
+  --op-semi-transparent:   0.08;
+
+  /* ---------- Blur ---------- */
+  --blur-transparent:  blur(2px);
+  --blur-opaque:       blur(16px);
+
+  /* ---------- Elevation / shadow ---------- */
+  --sh-0: 0 0 0 0 transparent;
+  --sh-1: 0 1px 2px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+  --sh-2: 0 4px 12px rgba(0,0,0,0.16), 0 1px 2px rgba(0,0,0,0.08);
+  --sh-3: 0 12px 32px rgba(0,0,0,0.32), 0 2px 8px rgba(0,0,0,0.16);
+  --sh-glow-green: 0 0 0 4px rgba(0,221,112,0.32);
+  --sh-glow-yellow: 0 0 0 4px rgba(250,215,73,0.32);
+
+  /* ---------- Motion ---------- */
+  --ease-standard:     cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized:   cubic-bezier(0.2, 0, 0, 1.4);
+  --dur-fast:          120ms;
+  --dur-base:          200ms;
+  --dur-slow:          320ms;
+}
+
+/* ============================================================
+   Semantic type styles — apply directly with class names
+   (kto.typography.* tokens from Living Documentation)
+   ============================================================ */
+
+html, body { color: var(--fg); background: var(--bg); font-family: var(--font-body); }
+
+/* --- Branded headers (NN Swinton STD italic, uppercase) --- */
+.t-branded,
+.t-branded-xs, .t-branded-sm, .t-branded-md, .t-branded-lg,
+.t-branded-xl, .t-branded-2xl, .t-branded-3xl, .t-branded-4xl {
+  font-family: var(--font-display);
+  font-weight: var(--fw-display);
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: var(--lh-sm);
+}
+.t-branded-xs  { font-size: var(--fs-16); }
+.t-branded-sm  { font-size: var(--fs-18); }
+.t-branded-md  { font-size: var(--fs-20); }
+.t-branded-lg  { font-size: var(--fs-24); }
+.t-branded-xl  { font-size: var(--fs-32); }
+.t-branded-2xl { font-size: var(--fs-40); }
+.t-branded-3xl { font-size: var(--fs-48); }
+.t-branded-4xl { font-size: var(--fs-56); }
+
+/* --- Default headers (Inter bold) --- */
+.t-header-sm  { font: var(--fw-bold) var(--fs-18)/var(--lh-md) var(--font-body); }
+.t-header-md  { font: var(--fw-bold) var(--fs-20)/var(--lh-md) var(--font-body); }
+.t-header-lg  { font: var(--fw-bold) var(--fs-24)/var(--lh-sm) var(--font-body); }
+.t-header-xl  { font: var(--fw-bold) var(--fs-32)/var(--lh-sm) var(--font-body); }
+.t-header-2xl { font: var(--fw-bold) var(--fs-40)/var(--lh-sm) var(--font-body); }
+.t-header-3xl { font: var(--fw-bold) var(--fs-48)/var(--lh-xs) var(--font-body); }
+.t-header-4xl { font: var(--fw-bold) var(--fs-56)/var(--lh-xs) var(--font-body); }
+
+/* --- Paragraph (Inter regular / semibold / bold at sm md lg) --- */
+.t-p-sm     { font: var(--fw-regular)  var(--fs-14)/var(--lh-lg) var(--font-body); }
+.t-p-sm-sb  { font: var(--fw-semibold) var(--fs-14)/var(--lh-lg) var(--font-body); }
+.t-p-sm-b   { font: var(--fw-bold)     var(--fs-14)/var(--lh-lg) var(--font-body); }
+.t-p-md     { font: var(--fw-regular)  var(--fs-16)/var(--lh-md) var(--font-body); }
+.t-p-md-sb  { font: var(--fw-semibold) var(--fs-16)/var(--lh-md) var(--font-body); }
+.t-p-md-b   { font: var(--fw-bold)     var(--fs-16)/var(--lh-md) var(--font-body); }
+.t-p-lg     { font: var(--fw-regular)  var(--fs-18)/var(--lh-md) var(--font-body); }
+.t-p-lg-sb  { font: var(--fw-semibold) var(--fs-18)/var(--lh-md) var(--font-body); }
+.t-p-lg-b   { font: var(--fw-bold)     var(--fs-18)/var(--lh-md) var(--font-body); }
+
+/* --- Subtitles / micro --- */
+.t-sub-sm    { font: var(--fw-regular) var(--fs-10)/1.5 var(--font-body); letter-spacing: 0.02em; }
+.t-sub-sm-b  { font: var(--fw-bold)    var(--fs-10)/1.5 var(--font-body); letter-spacing: 0.02em; }
+.t-sub-lg    { font: var(--fw-regular) var(--fs-12)/var(--lh-lg) var(--font-body); }
+.t-sub-lg-b  { font: var(--fw-bold)    var(--fs-12)/var(--lh-lg) var(--font-body); }
+
+/* --- Generic element defaults --- */
+h1 { @apply: t-header-3xl; font: var(--fw-bold) var(--fs-48)/var(--lh-xs) var(--font-body); margin: 0; }
+h2 { font: var(--fw-bold) var(--fs-32)/var(--lh-sm) var(--font-body); margin: 0; }
+h3 { font: var(--fw-bold) var(--fs-24)/var(--lh-sm) var(--font-body); margin: 0; }
+h4 { font: var(--fw-bold) var(--fs-20)/var(--lh-md) var(--font-body); margin: 0; }
+h5 { font: var(--fw-bold) var(--fs-18)/var(--lh-md) var(--font-body); margin: 0; }
+p  { font: var(--fw-regular) var(--fs-16)/var(--lh-md) var(--font-body); margin: 0; }
+small { font-size: var(--fs-12); color: var(--fg-muted); }
+code, pre, kbd { font-family: var(--font-mono); font-size: var(--fs-12); }
+
+/* The "wordmark" treatment — italic display, uppercase, slight optical squeeze.
+   This is the look of the brand cover (e.g. "ACE", "bem-vindo de volta!"). */
+.kto-wordmark {
+  font-family: var(--font-display);
+  font-style: italic;
+  text-transform: lowercase;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
