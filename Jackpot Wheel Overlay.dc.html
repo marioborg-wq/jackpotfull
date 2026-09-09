@@ -87,22 +87,16 @@
       <div style="width: 96px; height: 96px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.15); border-top-color: #FAD749; animation: jw-spin 900ms linear infinite; z-index: 1;"></div>
       <span ref="{{ preloaderTextRef }}" style="font-family: Inter, sans-serif; font-weight: 600; font-size: 13px; color: #EEEEEE; z-index: 1;">Loading… 0%</span>
     </div>
-    <audio ref="{{ musicRef }}" src="audio/suspense.wav" loop preload="auto" playsinline style="display: none;"></audio>
     <audio ref="{{ countdownAudioRef }}" src="audio/countdown-sine-wave-beeps.mp3" preload="auto" playsinline style="display: none;"></audio>
     <audio ref="{{ winLoopRef }}" src="audio/long-dramatic.mp3" loop preload="auto" playsinline style="display: none;"></audio>
     <audio ref="{{ coinsSoundRef }}" src="audio/coins-drop.wav" loop preload="auto" playsinline style="display: none;"></audio>
     <audio ref="{{ reelSpinRef }}" src="audio/reel-spin.wav" loop preload="auto" playsinline style="display: none;"></audio>
 
-    <div onClick="{{ onToggleMusic }}" style="position: absolute; right: 16px; bottom: 100px; width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 9;" style-hover="background: rgba(0,0,0,0.75);">
-      <svg ref="{{ speakerOnRef }}" width="20" height="20" viewBox="0 0 24 24" style="color: #FFFFFF;"><path d="M4 9v6h4l5 5V4L8 9H4Z" fill="currentColor"></path><path d="M16.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"></path><path d="M19 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"></path></svg>
-      <svg ref="{{ speakerOffRef }}" width="20" height="20" viewBox="0 0 24 24" style="color: #FFFFFF; display: none;"><path d="M4 9v6h4l5 5V4L8 9H4Z" fill="currentColor"></path><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
-    </div>
-
     <div class="jw-gradient-overlay" style="position: absolute; left: 0; top: 0; width: 393px; height: 861px; background: rgba(0,0,0,0.9);"></div>
 
     <div ref="{{ topContentRef }}" style="transition: opacity 260ms cubic-bezier(0.2,0,0,1);">
     <div style="position: absolute; left: 0; top: 0; width: 393px; height: 205px; z-index: 5; pointer-events: none;">
-      <div style="position: absolute; left: 50%; top: 145px; width: 230px; height: 90px; transform: translate(-50%, -50%); background: radial-gradient(50% 50% at 50% 62%, rgba(255,150,20,0.55) 0%, rgba(255,90,0,0.28) 45%, rgba(255,60,0,0) 75%); filter: blur(6px); animation: jw-flicker 1400ms ease-in-out infinite; z-index: 1;"></div>
+      <div style="position: absolute; left: 50%; top: 95px; width: 230px; height: 90px; transform: translate(-50%, -50%); background: radial-gradient(50% 50% at 50% 62%, rgba(255,150,20,0.55) 0%, rgba(255,90,0,0.28) 45%, rgba(255,60,0,0) 75%); filter: blur(6px); animation: jw-flicker 1400ms ease-in-out infinite; z-index: 1;"></div>
       <img class="jw-logo-img" src="skin/image-88.png" alt="KTO Jackpot de Fogo" style="position: absolute; left: 96.5px; top: 66px; width: 200px; height: 59px; object-fit: contain; z-index: 2; animation: jw-idle-bob 2600ms ease-in-out infinite;" />
       <div style="position: absolute; left: 50%; top: 178px; width: 190px; height: 1px; transform: translateX(-50%); z-index: 3;">
         <span style="position: absolute; left: 4%;  bottom: 0; width: 4px; height: 4px; border-radius: 50%; background: #FFD24A; box-shadow: 0 0 8px #FF7A00; --dx: -14px; animation: jw-ember 2000ms linear infinite; animation-delay: 0ms;"></span>
@@ -286,15 +280,12 @@ class Component extends DCLogic {
   pillMajorRef = React.createRef();
   pillMinorRef = React.createRef();
   pillMiniRef = React.createRef();
-  musicRef = React.createRef();
   countdownRef = React.createRef();
   countdownNumRef = React.createRef();
   rootRef = React.createRef();
   phoneRef = React.createRef();
   preloaderRef = React.createRef();
   preloaderTextRef = React.createRef();
-  speakerOnRef = React.createRef();
-  speakerOffRef = React.createRef();
   countdownAudioRef = React.createRef();
   winLoopRef = React.createRef();
 
@@ -347,8 +338,7 @@ class Component extends DCLogic {
       if (window.__jwAudioUnlocked) {
         this.unlockAllAudio();
       }
-      this.ensureMusic();
-      this.unlockAudio = () => { this.unlockAllAudio(); this.ensureMusic(); };
+      this.unlockAudio = () => { this.unlockAllAudio(); };
       window.addEventListener("pointerdown", this.unlockAudio, { once: true });
       const elapsed = performance.now() - this.mountTime;
       this.autoTimer = setTimeout(() => this.randomSpin(), Math.max(0, 4000 - elapsed));
@@ -406,7 +396,6 @@ class Component extends DCLogic {
     clearTimeout(this.coinsSoundTimer);
     this.stopReelSpinSound();
     clearInterval(this.countdownTimer);
-    clearTimeout(this.musicRetryTimer);
     window.removeEventListener("pointerdown", this.unlockAudio);
     window.removeEventListener("resize", this.rescale);
     if (this._ro) this._ro.disconnect();
@@ -667,7 +656,7 @@ class Component extends DCLogic {
   }
 
   unlockAllAudio() {
-    [this.musicRef, this.coinsSoundRef, this.reelSpinRef, this.winLoopRef, this.countdownAudioRef].forEach(ref => {
+    [this.coinsSoundRef, this.reelSpinRef, this.winLoopRef, this.countdownAudioRef].forEach(ref => {
       const el = ref.current;
       if (!el) return;
       const prevMuted = el.muted;
@@ -712,36 +701,6 @@ class Component extends DCLogic {
     this.winFireTimer = setTimeout(() => this.setFire(t.fire, t.fireSize), 520);
   }
 
-  stopMusic() {
-    const el = this.musicRef.current;
-    if (el) el.pause();
-  }
-
-  ensureMusic() {
-    const el = this.musicRef.current;
-    if (!el || this.musicMuted) return;
-    el.volume = 0.55;
-    const tryPlay = () => {
-      el.play().catch(() => {
-        clearTimeout(this.musicRetryTimer);
-        this.musicRetryTimer = setTimeout(() => this.ensureMusic(), 800);
-      });
-    };
-    if (el.readyState >= 2) {
-      if (el.paused) tryPlay();
-    } else {
-      el.addEventListener("canplaythrough", tryPlay, { once: true });
-      el.addEventListener("error", () => {
-        clearTimeout(this.musicRetryTimer);
-        this.musicRetryTimer = setTimeout(() => {
-          el.load();
-          this.ensureMusic();
-        }, 1000);
-      }, { once: true });
-      el.load();
-    }
-  }
-
   playCountdownSound() {
     const el = this.countdownAudioRef.current;
     if (!el || this.musicMuted) return;
@@ -758,7 +717,6 @@ class Component extends DCLogic {
   }
 
   playWinLoop() {
-    this.stopMusic();
     const el = this.winLoopRef.current;
     if (!el || this.musicMuted) return;
     el.volume = 0.7;
@@ -772,29 +730,11 @@ class Component extends DCLogic {
       el.pause();
       el.currentTime = 0;
     }
-    this.ensureMusic();
-  }
-
-  toggleMusic() {
-    this.musicMuted = !this.musicMuted;
-    const el = this.musicRef.current;
-    if (el) {
-      if (this.musicMuted) el.pause();
-      else el.play().catch(() => {});
-    }
-    const win = this.winLoopRef.current;
-    if (win) {
-      if (this.musicMuted) win.pause();
-      else if (this.phase === "result") win.play().catch(() => {});
-    }
-    if (this.speakerOnRef.current) this.speakerOnRef.current.style.display = this.musicMuted ? "none" : "block";
-    if (this.speakerOffRef.current) this.speakerOffRef.current.style.display = this.musicMuted ? "block" : "none";
   }
 
   spin() {
     if (!this.assetsReady || this.phase === "spinning" || this.phase === "countdown") return;
     if (this.phase !== "idle") this.applyIdle();
-    this.ensureMusic();
     clearTimeout(this.autoTimer);
     this.phase = "countdown";
     let n = 3;
@@ -995,11 +935,7 @@ class Component extends DCLogic {
       preloaderRef: this.preloaderRef,
       preloaderTextRef: this.preloaderTextRef,
       countdownAudioRef: this.countdownAudioRef,
-      winLoopRef: this.winLoopRef,
-      musicRef: this.musicRef,
-      speakerOnRef: this.speakerOnRef,
-      speakerOffRef: this.speakerOffRef,
-      onToggleMusic: () => this.toggleMusic()
+      winLoopRef: this.winLoopRef
     };
   }
 }
