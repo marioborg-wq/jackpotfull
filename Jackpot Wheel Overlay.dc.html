@@ -656,13 +656,15 @@ class Component extends DCLogic {
     [this.coinsSoundRef, this.reelSpinRef, this.countdownAudioRef].forEach(ref => {
       const el = ref.current;
       if (!el) return;
-      const prevMuted = el.muted;
-      el.muted = true;
+      const prevVolume = el.volume;
+      el.volume = 0;
       el.play().then(() => {
-        el.pause();
-        el.currentTime = 0;
-        el.muted = prevMuted;
-      }).catch(() => { el.muted = prevMuted; });
+        setTimeout(() => {
+          el.pause();
+          el.currentTime = 0;
+          el.volume = prevVolume;
+        }, 50);
+      }).catch(() => { el.volume = prevVolume; });
     });
   }
 
