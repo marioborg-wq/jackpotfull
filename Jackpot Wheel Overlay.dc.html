@@ -88,7 +88,6 @@
       <span ref="{{ preloaderTextRef }}" style="font-family: Inter, sans-serif; font-weight: 600; font-size: 13px; color: #EEEEEE; z-index: 1;">Loading… 0%</span>
     </div>
     <audio ref="{{ countdownAudioRef }}" src="audio/countdown-sine-wave-beeps.mp3" preload="auto" playsinline style="display: none;"></audio>
-    <audio ref="{{ winLoopRef }}" src="audio/long-dramatic.mp3" loop preload="auto" playsinline style="display: none;"></audio>
     <audio ref="{{ coinsSoundRef }}" src="audio/coins-drop.wav" loop preload="auto" playsinline style="display: none;"></audio>
     <audio ref="{{ reelSpinRef }}" src="audio/reel-spin.wav" loop preload="auto" playsinline style="display: none;"></audio>
 
@@ -232,7 +231,7 @@
 
     </div>
 
-    <div ref="{{ pointerWrapRef }}" style="position: absolute; left: 143px; top: 557px; width: 106px; height: 214px; z-index: 4; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));">
+    <div ref="{{ pointerWrapRef }}" style="position: absolute; left: 143px; top: 620px; width: 106px; height: 214px; z-index: 4; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));">
       <img src="skin/marker.png" alt="" style="width: 100%; height: 100%; object-fit: contain; display: block;" />
     </div>
   </div>
@@ -287,7 +286,6 @@ class Component extends DCLogic {
   preloaderRef = React.createRef();
   preloaderTextRef = React.createRef();
   countdownAudioRef = React.createRef();
-  winLoopRef = React.createRef();
 
   randomSpin = () => {
     if (!this.assetsReady || this.phase === "spinning" || this.phase === "countdown") return;
@@ -353,7 +351,7 @@ class Component extends DCLogic {
       "assets/coin0.png", "assets/coin1.png", "assets/coin2.png", "assets/coin3.png",
       "assets/coin5.png", "assets/coin6.png", "assets/coin7.png", "assets/coin8.png", "assets/coin9.png", "assets/coin10.png"
     ];
-    const audios = ["audio/suspense.wav", "audio/countdown-sine-wave-beeps.mp3", "audio/long-dramatic.mp3", "audio/coins-drop.wav", "audio/reel-spin.wav"];
+    const audios = ["audio/countdown-sine-wave-beeps.mp3", "audio/coins-drop.wav", "audio/reel-spin.wav"];
     const total = images.length + audios.length;
     let loaded = 0;
     const bump = () => {
@@ -416,7 +414,6 @@ class Component extends DCLogic {
     clearInterval(this.countdownTimer);
     clearTimeout(this.winLoopTimer);
     this.stopCountdownSound();
-    this.stopWinLoop();
     this.hideWinMessage();
     this.clearCoinRain();
     if (this.countdownRef.current) this.countdownRef.current.style.opacity = "0";
@@ -656,7 +653,7 @@ class Component extends DCLogic {
   }
 
   unlockAllAudio() {
-    [this.coinsSoundRef, this.reelSpinRef, this.winLoopRef, this.countdownAudioRef].forEach(ref => {
+    [this.coinsSoundRef, this.reelSpinRef, this.countdownAudioRef].forEach(ref => {
       const el = ref.current;
       if (!el) return;
       const prevMuted = el.muted;
@@ -716,22 +713,6 @@ class Component extends DCLogic {
     el.currentTime = 0;
   }
 
-  playWinLoop() {
-    const el = this.winLoopRef.current;
-    if (!el || this.musicMuted) return;
-    el.volume = 0.7;
-    el.currentTime = 0;
-    el.play().catch(() => {});
-  }
-
-  stopWinLoop() {
-    const el = this.winLoopRef.current;
-    if (el) {
-      el.pause();
-      el.currentTime = 0;
-    }
-  }
-
   spin() {
     if (!this.assetsReady || this.phase === "spinning" || this.phase === "countdown") return;
     if (this.phase !== "idle") this.applyIdle();
@@ -780,7 +761,6 @@ class Component extends DCLogic {
     const style = this.props.stopStyle || "Near-miss";
     const total = Math.max(3200, Number(this.props.spinDuration) || 5400);
     clearTimeout(this.winLoopTimer);
-    this.winLoopTimer = setTimeout(() => this.playWinLoop(), Math.max(0, total - 1000));
     const wMax = 1280;
     const tUp = 520;
     const tSettle = 620;
@@ -934,8 +914,7 @@ class Component extends DCLogic {
       countdownNumRef: this.countdownNumRef,
       preloaderRef: this.preloaderRef,
       preloaderTextRef: this.preloaderTextRef,
-      countdownAudioRef: this.countdownAudioRef,
-      winLoopRef: this.winLoopRef
+      countdownAudioRef: this.countdownAudioRef
     };
   }
 }
