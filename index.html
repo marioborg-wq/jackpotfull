@@ -2,6 +2,13 @@
 <html>
 <head>
 <meta charset="utf-8">
+<template id="__bundler_thumbnail" data-bg-color="#161616">
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<rect width="200" height="200" fill="#161616"/>
+<circle cx="100" cy="100" r="60" fill="#FAD749"/>
+<text x="100" y="112" font-size="42" text-anchor="middle" fill="#000">🎰</text>
+</svg>
+</template>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
 </head>
@@ -311,7 +318,7 @@
 
     <sc-if value="{{ wheelVisible }}" hint-placeholder-val="{{ false }}">
       <div style="position: absolute; inset: 0; z-index: 40;">
-        <dc-import name="Jackpot Wheel Overlay v2" hint-size="393px,852px" style="position: absolute; inset: 0;"></dc-import>
+        <dc-import name="Wheel Overlay" hint-size="393px,852px" style="position: absolute; inset: 0;"></dc-import>
       </div>
     </sc-if>
 
