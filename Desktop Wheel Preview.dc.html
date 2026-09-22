@@ -9,11 +9,20 @@
 <x-dc>
 <helmet>
 <style>body { margin: 0; background: #2b2b2b; }</style>
+<script type="module" src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.3/dist/dotlottie-wc.js"></script>
 </helmet>
 <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; gap: 32px; background: #2b2b2b; padding: 40px; box-sizing: border-box;">
   <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" title="" dark="{{ true }}" leading-icon="{{ false }}" trailing-icon="{{ false }}" hint-size="393px,852px">
     <div style="position: relative; width: 100%; height: 100%; background: #000; overflow: hidden;">
-      <dc-import name="Wheel Overlay" hint-size="393px,852px" style="position: absolute; inset: 0;"></dc-import>
+      <sc-if value="{{ wheelVisible }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="Wheel Overlay" hint-size="393px,852px" style="position: absolute; inset: 0;"></dc-import>
+      </sc-if>
+      <div style="position: absolute; left: 0; right: 0; bottom: 56px; z-index: 6; height: 50px; background: #1E1E1E; box-sizing: border-box; overflow: hidden; pointer-events: none; display: flex; align-items: center; justify-content: center; opacity: {{ headsUpOpacity }}; transition: opacity 200ms ease;">
+        <dotlottie-wc ref="{{ headsUpRef }}" src="skin/lottie/headsup.lottie" loop="false" style="width: 100%; height: 50px;"></dotlottie-wc>
+        <div style="position: absolute; inset: 0; display: flex; align-items: center; padding-left: 16px; box-sizing: border-box;">
+          <span style="font-family: Inter, sans-serif; font-weight: 700; font-size: 13px; color: #FAD749;">Hold on! something big is coming!</span>
+        </div>
+      </div>
     </div>
   </x-import>
   <div style="width: 200px; display: flex; flex-direction: column; gap: 10px; background: #1E1E1E; border: 1px solid #3a3a3a; border-radius: 12px; padding: 16px; box-sizing: border-box;">
@@ -28,14 +37,54 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { pressed: null };
+  state = { pressed: null, headsUpVisible: true, wheelVisible: false };
+  headsUpRef = React.createRef();
+
+  componentDidMount() {
+    this.showHeadsUp();
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this._headsUpFallback);
+  }
+
+  showHeadsUp = () => {
+    this.setState({ headsUpVisible: true });
+    clearTimeout(this._headsUpFallback);
+    this._headsUpFallback = setTimeout(() => {
+      const el2 = this.headsUpRef.current;
+      if (el2 && el2.dotLottie) { try { el2.dotLottie.pause(); } catch (e) {} }
+      this.revealWheel();
+    }, 4000);
+    this._playAttach(0);
+  };
+
+  _playAttach = (tries) => {
+    const el = this.headsUpRef.current;
+    if (el && el.dotLottie && el.dotLottie.totalFrames > 0) {
+      try { el.setAttribute('autoplay', 'true'); } catch (e) {}
+      try { el.dotLottie.setLoop(false); } catch (e) {}
+      try { el.dotLottie.play(); } catch (e) {}
+      return;
+    }
+    if (tries > 40) return;
+    setTimeout(() => this._playAttach(tries + 1), 50);
+  };
+
+  revealWheel = () => {
+    clearTimeout(this._headsUpFallback);
+    this.setState({ headsUpVisible: false, wheelVisible: true });
+  };
 
   jump(key) {
     this.setState({ pressed: key });
-    const wheel = window.__jwWheelInstance;
-    if (wheel && typeof wheel.jumpToTier === "function") {
-      wheel.jumpToTier(key);
-    }
+    if (!this.state.wheelVisible) this.revealWheel();
+    setTimeout(() => {
+      const wheel = window.__jwWheelInstance;
+      if (wheel && typeof wheel.jumpToTier === "function") {
+        wheel.jumpToTier(key);
+      }
+    }, this.state.wheelVisible ? 0 : 60);
   }
 
   renderVals() {
@@ -47,6 +96,9 @@ class Component extends DCLogic {
     ];
     const pressed = this.state.pressed;
     return {
+      headsUpOpacity: this.state.headsUpVisible ? 1 : 0,
+      headsUpRef: this.headsUpRef,
+      wheelVisible: this.state.wheelVisible,
       tiers: defs.map(d => ({
         ...d,
         color: d.key === pressed ? "#FAD749" : "#3a3a3a",

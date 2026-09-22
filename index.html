@@ -62,7 +62,7 @@
     </div>
 
     <div style="position: absolute; left: 0; right: 0; bottom: 56px; z-index: 6; height: 50px; background: var(--bg-elevated); box-sizing: border-box; overflow: hidden; pointer-events: none; display: flex; align-items: center; justify-content: center; opacity: {{ headsUpOpacity }}; transition: opacity 200ms var(--ease-standard);">
-      <dotlottie-wc ref="{{ headsUpRef }}" src="skin/headsup.lottie" loop="false" style="width: 100%; height: 50px;"></dotlottie-wc>
+      <dotlottie-wc ref="{{ headsUpRef }}" src="skin/lottie/headsup.lottie" loop="false" style="width: 100%; height: 50px;"></dotlottie-wc>
       <div style="position: absolute; inset: 0; display: flex; align-items: center; padding-left: 16px; box-sizing: border-box;">
         <span style="font: var(--fw-bold) 13px/1.3 var(--font-body); color: var(--kto-yellow);">Hold on! something big is coming!</span>
       </div>
@@ -389,23 +389,25 @@ class Component extends DCLogic {
 
   showHeadsUp = () => {
     this.setState({ headsUpVisible: true });
-    const el = this.headsUpRef.current;
     clearTimeout(this._headsUpFallback);
     this._headsUpFallback = setTimeout(() => {
       const el2 = this.headsUpRef.current;
       if (el2 && el2.dotLottie) { try { el2.dotLottie.pause(); } catch (e) {} }
       this.revealWheel();
-    }, 6000);
-    if (!el) return;
-    const start = () => {
+    }, 4000);
+    this._playAttach(0);
+  };
+
+  _playAttach = (tries) => {
+    const el = this.headsUpRef.current;
+    if (el && el.dotLottie && el.dotLottie.totalFrames > 0) {
       try { el.setAttribute('autoplay', 'true'); } catch (e) {}
-      if (el.dotLottie) {
-        try { el.dotLottie.setLoop(false); } catch (e) {}
-        try { el.dotLottie.play(); } catch (e) {}
-      }
-    };
-    if (el.dotLottie) start();
-    else el.addEventListener('load', start, { once: true });
+      try { el.dotLottie.setLoop(false); } catch (e) {}
+      try { el.dotLottie.play(); } catch (e) {}
+      return;
+    }
+    if (tries > 40) return;
+    setTimeout(() => this._playAttach(tries + 1), 50);
   };
 
   revealWheel = () => {
