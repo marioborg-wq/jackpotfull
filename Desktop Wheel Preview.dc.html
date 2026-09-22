@@ -46,14 +46,14 @@ class Component extends DCLogic {
 
   componentWillUnmount() {
     clearTimeout(this._headsUpFallback);
+    this._stopHeadsUpDrive();
   }
 
   showHeadsUp = () => {
     this.setState({ headsUpVisible: true });
     clearTimeout(this._headsUpFallback);
     this._headsUpFallback = setTimeout(() => {
-      const el2 = this.headsUpRef.current;
-      if (el2 && el2.dotLottie) { try { el2.dotLottie.pause(); } catch (e) {} }
+      this._stopHeadsUpDrive();
       this.revealWheel();
     }, 4000);
     this._playAttach(0);
@@ -62,13 +62,31 @@ class Component extends DCLogic {
   _playAttach = (tries) => {
     const el = this.headsUpRef.current;
     if (el && el.dotLottie && el.dotLottie.totalFrames > 0) {
-      try { el.setAttribute('autoplay', 'true'); } catch (e) {}
       try { el.dotLottie.setLoop(false); } catch (e) {}
-      try { el.dotLottie.play(); } catch (e) {}
+      try { el.dotLottie.pause(); } catch (e) {}
+      this._driveHeadsUp(el.dotLottie);
       return;
     }
     if (tries > 40) return;
     setTimeout(() => this._playAttach(tries + 1), 50);
+  };
+
+  _driveHeadsUp = (dl) => {
+    const total = dl.totalFrames || 150;
+    const durMs = (dl.duration || 5) * 1000;
+    const start = performance.now();
+    const tick = () => {
+      const elapsed = performance.now() - start;
+      const frame = Math.min(total - 1, Math.floor((elapsed / durMs) * total));
+      try { dl.setFrame(frame); } catch (e) {}
+      if (elapsed < durMs) this._headsUpRaf = requestAnimationFrame(tick);
+    };
+    this._headsUpRaf = requestAnimationFrame(tick);
+  };
+
+  _stopHeadsUpDrive = () => {
+    if (this._headsUpRaf) cancelAnimationFrame(this._headsUpRaf);
+    this._headsUpRaf = null;
   };
 
   revealWheel = () => {
