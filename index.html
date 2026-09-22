@@ -58,15 +58,22 @@
     </div>
 
     <div style="flex: 1; position: relative; display: flex; align-items: center; justify-content: center; background: var(--bg); min-height: 0; overflow: hidden;">
-      <video src="bar-assets/slot-game.mp4" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; object-position: center top;"></video>
+      <video src="video/slot-game.mp4" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; object-position: center top;"></video>
+    </div>
+
+    <div style="position: absolute; left: 0; right: 0; bottom: 56px; z-index: 6; height: 50px; background: var(--bg-elevated); box-sizing: border-box; overflow: hidden; pointer-events: none; display: flex; align-items: center; justify-content: center; opacity: {{ headsUpOpacity }}; transition: opacity 200ms var(--ease-standard);">
+      <dotlottie-wc ref="{{ headsUpRef }}" src="skin/headsup.lottie" loop="false" style="width: 100%; height: 50px;"></dotlottie-wc>
+      <div style="position: absolute; inset: 0; display: flex; align-items: center; padding-left: 16px; box-sizing: border-box;">
+        <span style="font: var(--fw-bold) 13px/1.3 var(--font-body); color: var(--kto-yellow);">Hold on! something big is coming!</span>
+      </div>
     </div>
 
     <sc-if value="{{ dropToastVisible }}" hint-placeholder-val="{{ false }}">
 <div style="position: absolute; left: 0; right: 0; bottom: 56px; z-index: 6; height: 50px; background: var(--bg-elevated); padding: 8px 12px; box-sizing: border-box; overflow: hidden; pointer-events: none; display: flex; align-items: center; justify-content: center;">
         <div style="position: absolute; inset: 0; background-image: {{ dropToastGradient }}; pointer-events: none;"></div>
-        <dotlottie-wc src="bar-assets/icons/falling-coins.lottie" autoplay loop style="position: absolute; left: 50%; top: 0; width: 300px; height: 50px; transform: translateX(-50%); z-index: 1; pointer-events: none;"></dotlottie-wc>
+        <dotlottie-wc src="skin/lottie/falling-coins.lottie" autoplay loop style="position: absolute; left: 50%; top: 0; width: 300px; height: 50px; transform: translateX(-50%); z-index: 1; pointer-events: none;"></dotlottie-wc>
         <div style="display: flex; align-items: center; justify-content: center; gap: 8px; opacity: {{ dropToastOpacity }}; transform: translateY({{ dropToastOffset }}px); transition: opacity 400ms var(--ease-standard), transform 400ms var(--ease-standard);">
-          <dotlottie-wc src="bar-assets/icons/jackpot-minor.lottie" autoplay loop style="width: 24px; height: 24px; flex-shrink: 0;"></dotlottie-wc>
+          <dotlottie-wc src="skin/lottie/jackpot-minor.lottie" autoplay loop style="width: 24px; height: 24px; flex-shrink: 0;"></dotlottie-wc>
           <div style="font: var(--fw-bold) 14px/1.4 var(--font-body); color: var(--kto-yellow); text-align: center;">{{ dropToastTitle }}</div>
         </div>
       </div>
@@ -80,11 +87,11 @@
         <sc-if value="{{ activeTier.isFire }}" hint-placeholder-val="{{ true }}">
           <div style="position: relative; display: flex; align-items: center; height: 30px; animation: flapIn 750ms var(--ease-standard); margin-top: 3px;">
             <div style="position: absolute; left: 0; top: 0; display: flex; align-items: center; opacity: {{ activeTier.logoIntroOpacity }}; transition: opacity 550ms var(--ease-standard); pointer-events: none;">
-              <img src="bar-assets/jackpot-logo.png" alt="KTO Jackpot" style="height: 30px; width: auto; flex-shrink: 0;">
+              <img src="skin/product-logo.png" alt="Jackpot" style="height: 30px; width: auto; flex-shrink: 0;">
             </div>
             <div style="display: flex; align-items: center; gap: 6px; opacity: {{ activeTier.megaContentOpacity }}; transition: opacity 550ms var(--ease-standard) {{ activeTier.megaContentDelay }};">
             <span style="position: relative; width: 22px; height: 22px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;">
-              <dotlottie-wc src="bar-assets/icons/jackpot-fire.lottie" autoplay loop style="width: 22px; height: 22px; position: relative; z-index: 1;"></dotlottie-wc>
+              <dotlottie-wc src="skin/lottie/jackpot-fire.lottie" autoplay loop style="width: 22px; height: 22px; position: relative; z-index: 1;"></dotlottie-wc>
             </span>
             <div style="display: flex; flex-direction: column; gap: 1px;">
               <span style="font: var(--fw-bold) 10px/12px var(--font-body); color: var(--kto-yellow); text-transform: uppercase; white-space: nowrap;">{{ activeTier.label }}</span>
@@ -108,7 +115,7 @@
         <sc-if value="{{ activeTier.isMajor }}" hint-placeholder-val="{{ false }}">
           <div style="display: flex; align-items: center; gap: 6px; animation: flapIn 750ms var(--ease-standard); transform-origin: center; margin-top: 3px;">
             <span style="position: relative; width: 22px; height: 22px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;">
-              <dotlottie-wc src="bar-assets/icons/jackpot-major.lottie" autoplay loop style="width: 22px; height: 22px; position: relative; z-index: 1;"></dotlottie-wc>
+              <dotlottie-wc src="skin/lottie/jackpot-major.lottie" autoplay loop style="width: 22px; height: 22px; position: relative; z-index: 1;"></dotlottie-wc>
             </span>
             <div style="display: flex; flex-direction: column; gap: 1px;">
               <span style="font: var(--fw-bold) 10px/12px var(--font-body); color: var(--kto-yellow); text-transform: uppercase; white-space: nowrap;">{{ activeTier.label }}</span>
@@ -131,7 +138,7 @@
         <sc-if value="{{ activeTier.isMinor }}" hint-placeholder-val="{{ false }}">
           <div style="display: flex; align-items: center; gap: 6px; animation: flapIn 750ms var(--ease-standard); transform-origin: center; margin-top: 3px;">
             <span style="position: relative; width: 22px; height: 22px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;">
-              <dotlottie-wc src="bar-assets/icons/jackpot-minor.lottie" autoplay loop style="width: 22px; height: 22px; position: relative; z-index: 1;"></dotlottie-wc>
+              <dotlottie-wc src="skin/lottie/jackpot-minor.lottie" autoplay loop style="width: 22px; height: 22px; position: relative; z-index: 1;"></dotlottie-wc>
             </span>
             <div style="display: flex; flex-direction: column; gap: 1px;">
               <span style="font: var(--fw-bold) 10px/12px var(--font-body); color: var(--kto-yellow); text-transform: uppercase; white-space: nowrap;">{{ activeTier.label }}</span>
@@ -154,7 +161,7 @@
         <sc-if value="{{ activeTier.isMini }}" hint-placeholder-val="{{ false }}">
           <div style="display: flex; align-items: center; gap: 6px; animation: flapIn 750ms var(--ease-standard); transform-origin: center; margin-top: 3px;">
             <span style="position: relative; width: 22px; height: 22px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;">
-              <dotlottie-wc src="bar-assets/icons/jackpot-mini.lottie" autoplay loop style="width: 22px; height: 22px; position: relative; z-index: 1;"></dotlottie-wc>
+              <dotlottie-wc src="skin/lottie/jackpot-mini.lottie" autoplay loop style="width: 22px; height: 22px; position: relative; z-index: 1;"></dotlottie-wc>
             </span>
             <div style="display: flex; flex-direction: column; gap: 1px;">
               <span style="font: var(--fw-bold) 10px/12px var(--font-body); color: var(--kto-yellow); text-transform: uppercase; white-space: nowrap;">{{ activeTier.label }}</span>
@@ -184,40 +191,40 @@
       </sc-if>
       <sc-if value="{{ !optedIn }}" hint-placeholder-val="{{ true }}">
         <div onClick="{{ openPopupFromInfo }}" style="position: relative; z-index: 0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 6px 4px; cursor: pointer;">
-          <dotlottie-wc src="bar-assets/icons/jackpot-logo-fire.lottie" autoplay loop style="height: 35px; width: 120px; flex-shrink: 0;"></dotlottie-wc>
+          <dotlottie-wc src="skin/lottie/jackpot-logo-fire.lottie" autoplay loop style="height: 35px; width: 120px; flex-shrink: 0;"></dotlottie-wc>
         </div>
       </sc-if>
 
       <div onClick="{{ handleBarToggleTap }}" style="display: flex; align-items: center; gap: 4px; justify-content: flex-end; flex: 1; min-width: 0; cursor: pointer;">
         <sc-if value="{{ optedIn }}" hint-placeholder-val="{{ false }}">
-          <img src="bar-assets/icons/participation-info.svg" alt="" onClick="{{ openPopupFromInfo }}" style="width: 24px; height: 24px; flex-shrink: 0; cursor: pointer; margin-right: 8px;">
+          <img src="assets/participation-info.svg" alt="" onClick="{{ openPopupFromInfo }}" style="width: 24px; height: 24px; flex-shrink: 0; cursor: pointer; margin-right: 8px;">
         </sc-if>
         <sc-if value="{{ !optedIn }}" hint-placeholder-val="{{ true }}">
-          <img src="bar-assets/icons/participation-info.svg" alt="" onClick="{{ openPopupFromInfo }}" style="width: 18px; height: 18px; flex-shrink: 0; cursor: pointer;">
+          <img src="assets/participation-info.svg" alt="" onClick="{{ openPopupFromInfo }}" style="width: 18px; height: 18px; flex-shrink: 0; cursor: pointer;">
         </sc-if>
         <sc-if value="{{ !optedIn }}" hint-placeholder-val="{{ true }}">
           <span onClick="{{ openPopupFromInfo }}" style="font: var(--fw-regular) 12px/1.45 var(--font-body); color: var(--fg); white-space: nowrap; cursor: pointer; margin-right: 4px;">Participar</span>
         </sc-if>
         <sc-if value="{{ optedIn }}" hint-placeholder-val="{{ false }}">
-          <img src="bar-assets/icons/toggle-on.svg" alt="" style="width: 32px; height: 20px; flex-shrink: 0;">
+          <img src="assets/toggle-on.svg" alt="" style="width: 32px; height: 20px; flex-shrink: 0;">
         </sc-if>
         <sc-if value="{{ !optedIn }}" hint-placeholder-val="{{ true }}">
-          <img src="bar-assets/icons/toggle-off.svg" alt="" style="width: 32px; height: 20px; flex-shrink: 0;">
+          <img src="assets/toggle-off.svg" alt="" style="width: 32px; height: 20px; flex-shrink: 0;">
         </sc-if>
       </div>
     </div>
 
     <div style="flex-shrink: 0; height: 56px; background: var(--bg); display: grid; grid-template-columns: repeat(3, 1fr); align-items: center;">
       <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-        <img src="bar-assets/icons/exit.svg" alt="" style="width: 22px; height: 22px;">
+        <img src="assets/exit.svg" alt="" style="width: 22px; height: 22px;">
         <span style="font: var(--fw-bold) 11px/1 var(--font-body); color: var(--fg);">Sair</span>
       </div>
       <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-        <img src="bar-assets/icons/deposit.svg" alt="" style="width: 28px; height: 28px;">
+        <img src="assets/deposit.svg" alt="" style="width: 28px; height: 28px;">
         <span style="font: var(--fw-bold) 11px/1 var(--font-body); color: var(--fg);">Depositar</span>
       </div>
       <div style="display: flex; flex-direction: column; align-items: center; gap: 3px;">
-        <img src="bar-assets/icons/cashback.svg" alt="" style="width: 22px; height: 22px;">
+        <img src="assets/cashback.svg" alt="" style="width: 22px; height: 22px;">
         <span style="font: var(--fw-bold) 9px/1 var(--font-body); color: var(--kto-yellow); display: inline-flex; align-items: center; gap: 2px;">R$ 60,00
           <svg width="6" height="6" viewBox="0 0 6 6" fill="var(--kto-green)"><polygon points="3,0 6,6 0,6"></polygon></svg>
         </span>
@@ -233,7 +240,7 @@
         </button>
 
         <div style="flex: 1; overflow-y: auto; padding: 24px 24px 8px; display: flex; flex-direction: column; align-items: center; gap: 24px;">
-          <img src="bar-assets/jackpot-game-art.png" alt="KTO Jackpot" style="width: 164px; height: auto; flex-shrink: 0;">
+          <img src="skin/product-logo.png" alt="Jackpot" style="width: 164px; height: auto; flex-shrink: 0;">
 
           <div style="display: flex; flex-direction: column; gap: 16px; align-self: stretch;">
             <span style="font: var(--fw-bold) 16px/1.35 var(--font-body); color: var(--fg); align-self: stretch;">Como participar:</span>
@@ -258,10 +265,10 @@
               <span style="font: var(--fw-regular) 14px/1.4 var(--font-body); color: var(--fg); white-space: nowrap;">Participar</span>
               <button aria-label="Alternar participação" onClick="{{ toggleOptIn }}" style="border: 0; padding: 0; cursor: pointer; flex-shrink: 0; background: transparent; line-height: 0;">
                 <sc-if value="{{ optedIn }}" hint-placeholder-val="{{ false }}">
-                  <img src="bar-assets/icons/toggle-on.svg" alt="" style="width: 32px; height: 20px; display: block;">
+                  <img src="assets/toggle-on.svg" alt="" style="width: 32px; height: 20px; display: block;">
                 </sc-if>
                 <sc-if value="{{ !optedIn }}" hint-placeholder-val="{{ true }}">
-                  <img src="bar-assets/icons/toggle-off.svg" alt="" style="width: 32px; height: 20px; display: block;">
+                  <img src="assets/toggle-off.svg" alt="" style="width: 32px; height: 20px; display: block;">
                 </sc-if>
               </button>
             </div>
@@ -318,7 +325,7 @@
 
     <sc-if value="{{ wheelVisible }}" hint-placeholder-val="{{ false }}">
       <div style="position: absolute; inset: 0; z-index: 40;">
-        <dc-import name="Wheel Overlay" hint-size="393px,852px" style="position: absolute; inset: 0;"></dc-import>
+        <dc-import name="Wheel Overlay" on-dismiss="{{ closeWheel }}" hint-size="393px,852px" style="position: absolute; inset: 0;"></dc-import>
       </div>
     </sc-if>
 
@@ -327,6 +334,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
+  headsUpRef = React.createRef();
   state = {
     optedIn: false,
     popupOpen: false,
@@ -343,6 +351,7 @@ class Component extends DCLogic {
     hasOptedInBefore: false,
     dropToastPhase: 'hidden',
     wheelVisible: false,
+    headsUpVisible: false,
   };
 
   tierMeta = {
@@ -372,10 +381,37 @@ class Component extends DCLogic {
     }, 1000);
     this.scheduleTick();
     window.addEventListener("pointerdown", () => { window.__jwAudioUnlocked = true; }, { once: true });
-    this._wheelTimer = setTimeout(() => this.setState({ wheelVisible: true }), 40000);
+    this._wheelTimer = setTimeout(this.showHeadsUp, 40000);
+    window.__jwOnDismiss = () => this.setState({ wheelVisible: false });
   }
 
   tierDuration = (key) => key === 'fire' ? 8000 : 5000;
+
+  showHeadsUp = () => {
+    this.setState({ headsUpVisible: true });
+    const el = this.headsUpRef.current;
+    clearTimeout(this._headsUpFallback);
+    this._headsUpFallback = setTimeout(() => {
+      const el2 = this.headsUpRef.current;
+      if (el2 && el2.dotLottie) { try { el2.dotLottie.pause(); } catch (e) {} }
+      this.revealWheel();
+    }, 6000);
+    if (!el) return;
+    const start = () => {
+      try { el.setAttribute('autoplay', 'true'); } catch (e) {}
+      if (el.dotLottie) {
+        try { el.dotLottie.setLoop(false); } catch (e) {}
+        try { el.dotLottie.play(); } catch (e) {}
+      }
+    };
+    if (el.dotLottie) start();
+    else el.addEventListener('load', start, { once: true });
+  };
+
+  revealWheel = () => {
+    clearTimeout(this._headsUpFallback);
+    this.setState({ headsUpVisible: false, wheelVisible: true });
+  };
 
   scheduleTick = () => {
     clearTimeout(this._tick);
@@ -440,6 +476,7 @@ class Component extends DCLogic {
     clearTimeout(this._drawerCloseAnimTimer);
     clearTimeout(this._logoIntroTimer);
     clearTimeout(this._wheelTimer);
+    clearTimeout(this._headsUpFallback);
   }
 
   formatBRL(n) {
@@ -590,6 +627,8 @@ class Component extends DCLogic {
       dropToastTitle: `${this.state.dropToastLabel || 'Minor'} Jackpot has dropped!`,
       dropToastGradient: 'radial-gradient(circle at 50% 100%, #7300FF66 0%, #7300FF22 30%, transparent 55%)',
       wheelVisible: this.state.wheelVisible,
+      headsUpOpacity: this.state.headsUpVisible ? 1 : 0,
+      headsUpRef: this.headsUpRef,
     };
   }
 }

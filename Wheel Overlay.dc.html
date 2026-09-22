@@ -107,16 +107,21 @@
       <div style="width: 96px; height: 96px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.15); border-top-color: #FAD749; animation: jw-spin 900ms linear infinite; z-index: 1;"></div>
       <span ref="{{ preloaderTextRef }}" style="font-family: Inter, sans-serif; font-weight: 600; font-size: 13px; color: #EEEEEE; z-index: 1;">Loading… 0%</span>
     </div>
-    <audio ref="{{ countdownAudioRef }}" src="audio/countdown-sine-wave-beeps.mp3" preload="auto" playsinline style="display: none;"></audio>
-    <audio ref="{{ coinsSoundRef }}" src="audio/coins-drop.wav" loop preload="auto" playsinline style="display: none;"></audio>
-    <audio ref="{{ reelSpinRef }}" src="audio/reel-spin.wav" loop preload="auto" playsinline style="display: none;"></audio>
+    <audio ref="{{ countdownAudioRef }}" src="audio/countdown-sine-wave-beeps.webm" preload="auto" playsinline style="display: none;"></audio>
+    <audio ref="{{ coinsSoundRef }}" src="audio/coins-drop.webm" loop preload="auto" playsinline style="display: none;"></audio>
+    <button ref="{{ tapPromptRef }}" onClick="{{ onTapToStart }}" style="position: absolute; inset: 0; z-index: 19; background: rgba(0,0,0,0.55); border: none; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 10px; cursor: pointer; opacity: 0; transition: opacity 320ms ease;">
+      <span style="width: 64px; height: 64px; border-radius: 50%; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center;">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="#FFFFFF"><path d="M8 5v14l11-7z"></path></svg>
+      </span>
+      <span style="font-family: Inter, sans-serif; font-weight: 600; font-size: 14px; color: #FFFFFF;">Tap to start with sound</span>
+    </button>
 
     <div class="jw-gradient-overlay" style="position: absolute; left: 0; top: 0; width: 393px; height: 861px; background: rgba(0,0,0,0.9);"></div>
 
     <div ref="{{ topContentRef }}" style="transition: opacity 260ms cubic-bezier(0.2,0,0,1);">
     <div style="position: absolute; left: 0; top: 0; width: 393px; height: 205px; z-index: 5; pointer-events: none;">
       <div style="position: absolute; left: 50%; top: 50px; width: 230px; height: 90px; transform: translate(-50%, -50%); background: radial-gradient(50% 50% at 50% 62%, rgba(255,150,20,0.55) 0%, rgba(255,90,0,0.28) 45%, rgba(255,60,0,0) 75%); filter: blur(6px); animation: jw-flicker 1400ms ease-in-out infinite; z-index: 1;"></div>
-      <img class="jw-logo-img" src="skin/image-88.png" alt="KTO Jackpot de Fogo" style="position: absolute; left: 101.5px; top: 28px; width: 190px; height: 56px; object-fit: contain; z-index: 2; animation: jw-idle-bob 2600ms ease-in-out infinite;" />
+      <img class="jw-logo-img" src="skin/product-logo.png" alt="Jackpot de Fogo" style="position: absolute; left: 101.5px; top: 28px; width: 190px; height: 56px; object-fit: contain; z-index: 2; animation: jw-idle-bob 2600ms ease-in-out infinite;" />
       <div style="position: absolute; left: 50%; top: 178px; width: 190px; height: 1px; transform: translateX(-50%); z-index: 3;">
         <span style="position: absolute; left: 4%;  bottom: 0; width: 4px; height: 4px; border-radius: 50%; background: #FFD24A; box-shadow: 0 0 8px #FF7A00; --dx: -14px; animation: jw-ember 2000ms linear infinite; animation-delay: 0ms;"></span>
         <span style="position: absolute; left: 16%; bottom: 0; width: 3px; height: 3px; border-radius: 50%; background: #FFAE2A; box-shadow: 0 0 8px #FF5A00; --dx: 10px;  animation: jw-ember 1650ms linear infinite; animation-delay: 220ms;"></span>
@@ -172,20 +177,21 @@
     </button>
 
     <div class="jw-win-message" ref="{{ winMessageRef }}" style="position: absolute; left: 0; top: 28px; width: 393px; z-index: 6; display: flex; flex-direction: column; align-items: center; opacity: 0; pointer-events: none; transition: opacity 320ms cubic-bezier(0.2,0,0,1);">
-      <img class="jw-win-logo" ref="{{ winLogoRef }}" src="skin/image-88.png" alt="KTO Jackpot de Fogo" style="width: 190px; height: 56px; object-fit: contain; margin-bottom: 34px;" />
+      <img class="jw-win-logo" ref="{{ winLogoRef }}" src="skin/product-logo.png" alt="Jackpot de Fogo" style="width: 190px; height: 56px; object-fit: contain; margin-bottom: 34px; opacity: 1; transition: opacity 700ms ease-in;" />
+      <img ref="{{ brandLogoRef }}" src="skin/brand-logo.svg" alt="Brand" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 20px; object-fit: contain; opacity: 0; transition: opacity 700ms ease-in; pointer-events: none;" />
       <span style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; width: 280px; min-height: 78px; padding: 0 8px; text-align: center; box-sizing: border-box;">
         <span style="font-family: Inter, sans-serif; font-weight: 600; font-size: 15px; letter-spacing: 0.3px; text-transform: capitalize; color: #FFFFFF;">You Just Won The</span>
-        <span style="display: inline-block; animation: jw-title-levitate 2600ms ease-in-out infinite;">
+        <span style="display: inline-block; margin-top: 10px; animation: jw-title-levitate 2600ms ease-in-out infinite;">
         <span style="display: inline-block; animation: jw-title-pulse 1800ms ease-in-out infinite;">
         <span ref="{{ winTitleRef }}" style="display: inline-block; font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 32px; line-height: 0.9; letter-spacing: 0.3px; text-transform: uppercase; background-image: linear-gradient(100deg, #FAD749 35%, #FFFFFF 50%, #FAD749 65%); background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: #FAD749; animation: jw-shine 2400ms linear infinite;">Minor Jackpot</span>
         </span>
       </span>
       </span>
-      <div ref="{{ winAmountRef }}" style="display: flex; flex-direction: row; align-items: center; margin-top: 8px;"></div>
+      <div ref="{{ winAmountRef }}" style="display: flex; flex-direction: row; align-items: center; margin-top: 8px; padding: 4px 14px; border-radius: 14px; border: 2px solid transparent; background: linear-gradient(#000,#000) padding-box, linear-gradient(100deg, #FAD749 0%, #FFF3C4 35%, #B8860B 60%, #FAD749 100%) border-box;"></div>
     </div>
 
     <div style="position: absolute; left: 0; top: 400px; width: 393px; display: flex; flex-direction: column; align-items: center; gap: 24px; z-index: 6;">
-      <div ref="{{ winCaptionRef }}" style="width: 100%; padding: 0 32px; box-sizing: border-box; font-family: Inter, sans-serif; font-size: 20px; color: #FFFFFF; text-align: center; opacity: 0; pointer-events: none; transition: opacity 400ms cubic-bezier(0.2,0,0,1);"></div>
+      <div ref="{{ winCaptionRef }}" style="width: 100%; padding: 0 32px; box-sizing: border-box; font-family: Inter, sans-serif; font-size: 15px; line-height: 20px; color: #FFFFFF; text-align: center; opacity: 0; pointer-events: none; transition: opacity 400ms cubic-bezier(0.2,0,0,1);"></div>
       <button ref="{{ dismissBtnRef }}" onClick="{{ onDismiss }}" style="opacity: 0; pointer-events: none; transition: opacity 400ms cubic-bezier(0.2,0,0,1); background: var(--cta-bg, #00DD70); color: var(--cta-fg, #000000); font-family: Inter, sans-serif; font-weight: 700; font-size: 16px; border: none; border-radius: var(--r-md, 12px); padding: 14px 40px; cursor: pointer;">Dismiss</button>
     </div>
 
@@ -239,7 +245,7 @@
       </div>
 
       <div ref="{{ ringRef }}" style="position: absolute; left: 0; top: 0; width: 360px; height: 360px; will-change: transform;">
-        <img src="skin/wheel-base-v2.png" alt="" style="position: absolute; left: 0; top: 0; width: 360px; height: 360px; object-fit: contain; filter: brightness(0.88) saturate(0.96) drop-shadow(0 12px 26px rgba(0,0,0,0.8));" />
+        <img src="skin/wheel-base.png" alt="" style="position: absolute; left: 0; top: 0; width: 360px; height: 360px; object-fit: contain; filter: brightness(0.88) saturate(0.96) drop-shadow(0 12px 26px rgba(0,0,0,0.8));" />
         <div style="position: absolute; left: 50%; top: 50%; width: 232px; height: 232px; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: inset 0 0 40px rgba(255,120,0,0.08);"></div>
 
         <div class="jw-label" data-idx="0" data-key="mini" style="position: absolute; left: 50%; top: 50%; width: 56px; transform-origin: 0 0; transform: rotate(11.25deg) translateY(-98px) rotate(-90deg) translate(-50%, -50%); font-family: 'NN Swinton STD', Anton, sans-serif; font-style: italic; font-weight: 900; font-size: 17px; line-height: 0.95; letter-spacing: -0.2px; text-transform: uppercase; text-align: right; color: #000000; white-space: nowrap;">Mini</div>
@@ -289,7 +295,7 @@
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:393,&quot;height&quot;:852},&quot;winningTier&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Mini Jackpot&quot;,&quot;Minor Jackpot&quot;,&quot;Major Jackpot&quot;,&quot;Mega Jackpot&quot;],&quot;default&quot;:&quot;Mega Jackpot&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Outcome&quot;},&quot;stopStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Clean&quot;,&quot;Near-miss&quot;,&quot;Slow-motion tick&quot;],&quot;default&quot;:&quot;Clean&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;spinDuration&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:3200,&quot;max&quot;:9000,&quot;step&quot;:200,&quot;default&quot;:5400,&quot;unit&quot;:&quot;ms&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;autoSpin&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Outcome&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:393,&quot;height&quot;:852},&quot;winningTier&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Mini Jackpot&quot;,&quot;Minor Jackpot&quot;,&quot;Major Jackpot&quot;,&quot;Mega Jackpot&quot;],&quot;default&quot;:&quot;Mega Jackpot&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Outcome&quot;},&quot;stopStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Clean&quot;,&quot;Near-miss&quot;,&quot;Slow-motion tick&quot;],&quot;default&quot;:&quot;Near-miss&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;spinDuration&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:8000,&quot;max&quot;:20000,&quot;step&quot;:200,&quot;default&quot;:16533,&quot;unit&quot;:&quot;ms&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;autoSpin&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Outcome&quot;}}">
 const SECTOR_WIDTH = 22.5;
 const SECTORS = [
   { key: "mini" }, { key: "mega" }, { key: "mini" }, { key: "nowin" },
@@ -298,20 +304,17 @@ const SECTORS = [
   { key: "major" }, { key: "minor" }, { key: "major" }, { key: "minor" }
 ].map((s, i) => ({ ...s, angle: i * SECTOR_WIDTH + SECTOR_WIDTH / 2 }));
 const TIER_INFO = {
-  mini:  { name: "Mini Jackpot",  amount: "R$ 1.956",     chest: "skin/icon_mini.png",  scale: 0.84, fire: 0.26, fireSize: 150, halo: 0.2 },
-  minor: { name: "Minor Jackpot", amount: "R$ 51.956",    chest: "skin/icon_minor.png", scale: 0.95, fire: 0.48, fireSize: 190, halo: 0.4 },
-  major: { name: "Major Jackpot", amount: "R$ 851.956",   chest: "skin/icon_major.png", scale: 1.06, fire: 0.7,  fireSize: 232, halo: 0.6 },
-  mega:  { name: "Mega Jackpot",  amount: "R$ 1.851.956", chest: "skin/icon_super.png", scale: 1.24, fire: 1.0,  fireSize: 300, halo: 1.0 },
-  nowin: { name: "No Win",        amount: "",              chest: "skin/icon_default.png", scale: 0.8, fire: 0, fireSize: 150, halo: 0 }
+  mini:  { name: "Mini Jackpot",  amount: "R$ 1.956",     scale: 0.84, fire: 0.26, fireSize: 150, halo: 0.2 },
+  minor: { name: "Minor Jackpot", amount: "R$ 51.956",    scale: 0.95, fire: 0.48, fireSize: 190, halo: 0.4 },
+  major: { name: "Major Jackpot", amount: "R$ 851.956",   scale: 1.06, fire: 0.7,  fireSize: 232, halo: 0.6 },
+  mega:  { name: "Mega Jackpot",  amount: "R$ 1.851.956", scale: 1.24, fire: 1.0,  fireSize: 300, halo: 1.0 },
+  nowin: { name: "No Win",        amount: "",              scale: 0.8, fire: 0, fireSize: 150, halo: 0 }
 };
 const SECTOR_WEIGHTS = { mini: 90, minor: 10, major: 9, mega: 1 };
-const CLOSED = "skin/icon_default.png";
 const IDLE_ROT = 45;
 
 class Component extends DCLogic {
   ringRef = React.createRef();
-  chestRef = React.createRef();
-  chestImgRef = React.createRef();
   fireRef = React.createRef();
   haloRef = React.createRef();
   sparksRef = React.createRef();
@@ -325,8 +328,8 @@ class Component extends DCLogic {
   winTitleRef = React.createRef();
   coinRainRef = React.createRef();
   coinsSoundRef = React.createRef();
-  reelSpinRef = React.createRef();
   winLogoRef = React.createRef();
+  brandLogoRef = React.createRef();
   embersRef = React.createRef();
   pointerWrapRef = React.createRef();
   wheelGroupRef = React.createRef();
@@ -334,8 +337,8 @@ class Component extends DCLogic {
   winCaptionRef = React.createRef();
   dismissBtnRef = React.createRef();
   muteBtnRef = React.createRef();
-  state = { muted: true };
-  musicMuted = true;
+  state = { muted: false };
+  musicMuted = false;
   grandRowRef = React.createRef();
   pillMajorRef = React.createRef();
   pillMinorRef = React.createRef();
@@ -347,6 +350,7 @@ class Component extends DCLogic {
   preloaderRef = React.createRef();
   preloaderTextRef = React.createRef();
   countdownAudioRef = React.createRef();
+  tapPromptRef = React.createRef();
 
   randomSpin = () => {
     if (!this.assetsReady || this.phase === "spinning" || this.phase === "countdown") return;
@@ -392,28 +396,73 @@ class Component extends DCLogic {
 
     this.mountTime = performance.now();
     this.assetsReady = false;
+    this.buffers = {};
+    try { this.actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { this.actx = null; }
     this.preloadAssets(() => {
       this.assetsReady = true;
+      this.unlockAudio = () => { this.unlockAllAudio(); };
       if (window.__jwAudioUnlocked) {
         this.unlockAllAudio();
+        this.scheduleAutoSpin();
+      } else {
+        window.addEventListener("pointerdown", this.unlockAudio, { once: true });
+        this.showTapPrompt();
       }
-      this.unlockAudio = () => { this.unlockAllAudio(); };
-      window.addEventListener("pointerdown", this.unlockAudio, { once: true });
-      const elapsed = performance.now() - this.mountTime;
-      this.autoTimer = setTimeout(() => this.randomSpin(), Math.max(0, 4000 - elapsed));
     });
+    window.__jwWheelInstance = this;
+    if (typeof this.props.onReady === "function") this.props.onReady(this);
   }
+
+  showTapPrompt() {
+    if (this.tapPromptRef.current) {
+      this.tapPromptRef.current.style.display = "flex";
+      requestAnimationFrame(() => {
+        if (this.tapPromptRef.current) this.tapPromptRef.current.style.opacity = "1";
+      });
+    }
+  }
+
+  hideTapPrompt() {
+    const el = this.tapPromptRef.current;
+    if (!el) return;
+    el.style.opacity = "0";
+    setTimeout(() => { el.style.display = "none"; }, 320);
+  }
+
+  scheduleAutoSpin() {
+    const elapsed = performance.now() - this.mountTime;
+    this.autoTimer = setTimeout(() => {
+      if (this._manualOverride) return;
+      this.randomSpin();
+    }, Math.max(0, 4000 - elapsed));
+  }
+
+
+  jumpToTier = (key) => {
+    this._manualOverride = true;
+    clearTimeout(this.autoTimer);
+    clearTimeout(this.flameFadeTimer);
+    clearInterval(this.countdownTimer);
+    if (this.raf) cancelAnimationFrame(this.raf);
+    this.applyIdle();
+    if (this.winLogoRef.current) this.winLogoRef.current.style.opacity = "1";
+    if (this.brandLogoRef.current) this.brandLogoRef.current.style.opacity = "0";
+    this.rot = 0;
+    this.target = this.tierIndex(key);
+    this.totalAngle = (360 - SECTORS[this.target].angle) % 360;
+    requestAnimationFrame(() => this.land());
+  };
 
   preloadAssets(done) {
     const images = [
-      "skin/wheel-base-v2.png", "skin/wheel-frame.png", "skin/marker.png", "skin/ring-of-fire.png",
-      "skin/icon_default.png", "skin/icon_mini.png", "skin/icon_minor.png", "skin/icon_major.png", "skin/icon_super.png",
-      "skin/image-88.png",
+      "skin/wheel-base.png", "skin/wheel-frame.png", "skin/marker.png", "skin/ring-of-fire.png",
+      "skin/product-logo.png", "skin/brand-logo.svg",
       "assets/coin0.png", "assets/coin1.png", "assets/coin2.png", "assets/coin3.png",
       "assets/coin5.png", "assets/coin6.png", "assets/coin7.png", "assets/coin8.png", "assets/coin9.png", "assets/coin10.png"
     ];
-    const audios = ["audio/countdown-sine-wave-beeps.mp3", "audio/coins-drop.wav", "audio/reel-spin.wav"];
-    const total = images.length + audios.length;
+    const audios = ["audio/countdown-sine-wave-beeps.webm", "audio/coins-drop.webm"];
+    const bufferUrls = ["audio/casino-wheel-spin.webm", "audio/fireworks-spin.webm", "audio/winning.webm"];
+    const total = images.length + audios.length + bufferUrls.length;
     let loaded = 0;
     const bump = () => {
       loaded++;
@@ -443,12 +492,74 @@ class Component extends DCLogic {
       a.src = src;
       a.load();
     });
+    bufferUrls.forEach(url => {
+      if (!this.actx) { bump(); return; }
+      fetch(url).then(r => r.arrayBuffer()).then(ab => this.actx.decodeAudioData(ab)).then(buf => {
+        this.buffers[url] = buf;
+        bump();
+      }).catch(() => bump());
+    });
+  }
+
+  playBuffer(url, opts) {
+    opts = opts || {};
+    if (!this.actx || !this.buffers[url] || this.musicMuted) return null;
+    if (this.actx.state === "suspended") this.actx.resume();
+    const ctx = this.actx;
+    const gain = opts.gain != null ? opts.gain : 1;
+    const delay = Math.max(0, opts.delay || 0);
+    const fadeIn = opts.fadeIn || 0;
+    const startAt = ctx.currentTime + delay;
+    const src = ctx.createBufferSource();
+    src.buffer = this.buffers[url];
+    const gainNode = ctx.createGain();
+    if (fadeIn > 0) {
+      gainNode.gain.setValueAtTime(0, startAt);
+      gainNode.gain.linearRampToValueAtTime(gain, startAt + fadeIn);
+    } else {
+      gainNode.gain.setValueAtTime(gain, startAt);
+    }
+    src.connect(gainNode).connect(ctx.destination);
+    src.start(startAt);
+    return { src, gainNode, baseGain: gain, startAt };
+  }
+
+  stopVoice(key, fadeSec) {
+    const v = this[key];
+    if (!v) return;
+    try {
+      const ctx = this.actx;
+      if (fadeSec && ctx) {
+        const now = ctx.currentTime;
+        v.gainNode.gain.cancelScheduledValues(now);
+        v.gainNode.gain.setValueAtTime(v.gainNode.gain.value, now);
+        v.gainNode.gain.linearRampToValueAtTime(0, now + fadeSec);
+        v.src.stop(now + fadeSec + 0.02);
+      } else {
+        v.src.stop();
+      }
+    } catch (e) {}
+    this[key] = null;
+  }
+
+  fadeOutVoice(key, durationMs) {
+    const v = this[key];
+    if (!v || !this.actx) return;
+    const ctx = this.actx;
+    const now = ctx.currentTime;
+    const dur = durationMs / 1000;
+    v.gainNode.gain.cancelScheduledValues(now);
+    v.gainNode.gain.setValueAtTime(v.gainNode.gain.value, now);
+    v.gainNode.gain.linearRampToValueAtTime(0, now + dur);
+    try { v.src.stop(now + dur + 0.02); } catch (e) {}
+    this[key] = null;
   }
 
   componentWillUnmount() {
     cancelAnimationFrame(this.raf);
     clearTimeout(this.autoTimer);
     clearTimeout(this.flameFadeTimer);
+    clearTimeout(this.fireworksFadeTimer);
     clearInterval(this.flameFlickerTimer);
     clearTimeout(this.exitTimer);
     clearTimeout(this.burstTimer);
@@ -457,6 +568,8 @@ class Component extends DCLogic {
     clearInterval(this.coinRainInterval);
     clearTimeout(this.coinsSoundTimer);
     this.stopReelSpinSound();
+    this.stopFireworksSound();
+    this.stopWinningSound();
     clearInterval(this.countdownTimer);
     window.removeEventListener("pointerdown", this.unlockAudio);
     window.removeEventListener("resize", this.rescale);
@@ -475,6 +588,7 @@ class Component extends DCLogic {
 
   applyIdle() {
     clearTimeout(this.flameFadeTimer);
+    clearTimeout(this.fireworksFadeTimer);
     clearTimeout(this.exitTimer);
     this._flameFading = false;
     if (this.wheelExitRef.current) {
@@ -490,20 +604,14 @@ class Component extends DCLogic {
       this.dismissBtnRef.current.style.pointerEvents = "none";
     }
     this.stopReelSpinSound();
+    this.stopFireworksSound();
+    this.stopWinningSound();
     clearInterval(this.countdownTimer);
     clearTimeout(this.winLoopTimer);
     this.stopCountdownSound();
     this.hideWinMessage();
     this.clearCoinRain();
     if (this.countdownRef.current) this.countdownRef.current.style.opacity = "0";
-    const img = this.chestImgRef.current;
-    const chest = this.chestRef.current;
-    if (img) img.src = CLOSED;
-    if (chest) {
-      chest.style.transition = "transform 260ms cubic-bezier(0.2,0,0,1)";
-      chest.style.transform = "scale(0.92)";
-      chest.style.animation = "jw-idle-bob 2600ms ease-in-out infinite";
-    }
     this.setFire(0, 160);
     this.setHalo(0);
     if (this.embersRef.current) this.embersRef.current.style.opacity = "0";
@@ -528,6 +636,7 @@ class Component extends DCLogic {
     if (this.pointerWrapRef.current) {
       this.pointerWrapRef.current.style.transition = "opacity 320ms cubic-bezier(0.2,0,0,1)";
       this.pointerWrapRef.current.style.opacity = "1";
+      this.pointerWrapRef.current.style.transform = "scale(1) rotate(0deg)";
     }
     this.setGroup(true);
     this.clearHighlights();
@@ -581,37 +690,6 @@ class Component extends DCLogic {
     if (i === this.sector && !burst) return;
     this.sector = i;
     const t = TIER_INFO[SECTORS[i].key];
-    const img = this.chestImgRef.current;
-    const chest = this.chestRef.current;
-    if (img) img.src = t.chest;
-    if (chest) {
-      chest.style.animation = "none";
-      if (burst) {
-        clearTimeout(this.burstTimer);
-        const s = t.scale;
-        const steps = [
-          [80,  s * 0.78],
-          [190, s * 1.4],
-          [140, s * 0.88],
-          [150, s * 1.18],
-          [150, s * 0.94],
-          [140, s * 1.06],
-          [160, s]
-        ];
-        let elapsed = 0;
-        steps.forEach(([dur, scale], idx) => {
-          elapsed += idx === 0 ? 0 : steps[idx - 1][0];
-          setTimeout(() => {
-            if (!chest) return;
-            chest.style.transition = "transform " + dur + "ms cubic-bezier(0.34,1.56,0.64,1)";
-            chest.style.transform = "scale(" + scale.toFixed(3) + ")";
-          }, elapsed);
-        });
-      } else {
-        chest.style.transition = "transform 90ms cubic-bezier(0.2,0,0,1)";
-        chest.style.transform = "scale(" + t.scale + ")";
-      }
-    }
     this.setFire(t.fire, t.fireSize);
     if (this.embersRef.current) this.embersRef.current.style.opacity = String(0.4 + 0.6 * t.fire);
   }
@@ -632,7 +710,7 @@ class Component extends DCLogic {
       void title.offsetWidth;
       title.style.animation = "jw-title-pop 620ms cubic-bezier(0.2,0,0,1), jw-shine 2400ms linear infinite 620ms";
     }
-    this.buildFlipAmount(t.amount);
+    this.buildFlipAmount(t.amount, t === TIER_INFO.mega);
   }
 
   hideWinMessage() {
@@ -646,13 +724,15 @@ class Component extends DCLogic {
     }
   }
 
-  buildFlipAmount(amount) {
+  buildFlipAmount(amount, slow) {
     const host = this.winAmountRef.current;
     if (!host) return;
     host.innerHTML = "";
     const H = 40;
     const chars = amount.split("");
-    const loops = 4;
+    const loops = slow ? 7 : 4;
+    const durMult = slow ? 1.8 : 1;
+    const delayMult = slow ? 1.6 : 1;
     chars.forEach((ch, i) => {
       if (/[0-9]/.test(ch)) {
         const digit = parseInt(ch, 10);
@@ -660,9 +740,9 @@ class Component extends DCLogic {
         const reelWrap = document.createElement("span");
         reelWrap.style.cssText = "display:inline-block;overflow:hidden;height:" + H + "px;width:22px;vertical-align:top;position:relative;";
         const reel = document.createElement("span");
-        const dur = 1500 + i * 90;
-        const delay = i * 110;
-        reel.style.cssText = "display:block;transform:translateY(0px);transition:transform " + dur + "ms steps(" + landIndex + ") " + delay + "ms;";
+        const dur = (1500 + i * 90) * durMult;
+        const delay = i * 110 * delayMult;
+        reel.style.cssText = "display:block;transform:translateY(0px);transition:transform " + dur + "ms cubic-bezier(0.1,0.7,0.25,1) " + delay + "ms;";
         const sequence = [];
         for (let l = 0; l < loops; l++) for (let d = 0; d <= 9; d++) sequence.push(d);
         sequence.forEach(d => {
@@ -716,25 +796,43 @@ class Component extends DCLogic {
       if (elapsed >= 5000) clearInterval(this.coinRainInterval);
     }, 350);
     clearTimeout(this.coinsSoundTimer);
-    this.coinsSoundTimer = setTimeout(() => this.stopCoinsSound(), 7800);
+    this.coinsSoundTimer = setTimeout(() => this.stopCoinsSound(), 6000);
   }
 
   playReelSpinSound() {
-    const el = this.reelSpinRef.current;
-    if (!el || this.musicMuted) return;
-    el.loop = true;
-    el.volume = 0.7;
-    el.currentTime = 0;
-    el.play().catch(() => {});
+    this.stopVoice("ratchetVoice");
+    this.ratchetVoice = this.playBuffer("audio/casino-wheel-spin.webm", { gain: 0.7, fadeIn: 0.6 });
   }
 
   stopReelSpinSound() {
-    const el = this.reelSpinRef.current;
-    if (el) { el.pause(); el.currentTime = 0; }
+    this.stopVoice("ratchetVoice");
+  }
+
+  playFireworksSound() {
+    this.stopVoice("fireworksVoice");
+    this.fireworksVoice = this.playBuffer("audio/fireworks-spin.webm", { gain: 0.75 });
+  }
+
+  stopFireworksSound() {
+    this.stopVoice("fireworksVoice");
+  }
+
+  playWinningSound() {
+    this.stopVoice("winningVoice");
+    this.winningVoice = this.playBuffer("audio/winning.webm", { gain: 0.8 });
+  }
+
+  stopWinningSound() {
+    this.stopVoice("winningVoice");
+  }
+
+  fadeOutFireworksSound(duration) {
+    this.fadeOutVoice("fireworksVoice", duration);
   }
 
   unlockAllAudio() {
-    [this.coinsSoundRef, this.reelSpinRef, this.countdownAudioRef].forEach(ref => {
+    if (this.actx && this.actx.state === "suspended") this.actx.resume();
+    [this.coinsSoundRef, this.countdownAudioRef].forEach(ref => {
       const el = ref.current;
       if (!el) return;
       const prevVolume = el.volume;
@@ -782,7 +880,6 @@ class Component extends DCLogic {
   }
 
   playCountdownSound() {
-    if (true) return;
     const el = this.countdownAudioRef.current;
     if (!el || this.musicMuted) return;
     el.volume = 0.8;
@@ -814,6 +911,7 @@ class Component extends DCLogic {
       n -= 1;
       if (n <= 0) {
         clearInterval(this.countdownTimer);
+        this.stopCountdownSound();
         if (this.countdownRef.current) this.countdownRef.current.style.opacity = "0";
         this.runSpin();
         return;
@@ -829,14 +927,6 @@ class Component extends DCLogic {
     this.clearHighlights();
     this.setHalo(0);
 
-    const img = this.chestImgRef.current;
-    const chest = this.chestRef.current;
-    if (img) img.src = CLOSED;
-    if (chest) {
-      chest.style.animation = "none";
-      chest.style.transition = "transform 200ms cubic-bezier(0.2,0,0,1)";
-      chest.style.transform = "scale(0.9)";
-    }
     this.setFire(0, 150);
     if (this.embersRef.current) this.embersRef.current.style.opacity = "0";
     if (this.flameRingRef.current) {
@@ -849,16 +939,16 @@ class Component extends DCLogic {
     this.labelEls().forEach(el => { el.style.transition = "opacity 300ms cubic-bezier(0.2,0,0,1)"; el.style.opacity = "1"; });
 
     const style = this.props.stopStyle || "Clean";
-    const total = Math.max(3200, Number(this.props.spinDuration) || 10000);
+    const total = Math.max(3200, Number(this.props.spinDuration) || 16533);
     clearTimeout(this.winLoopTimer);
     const wMax = 1280;
     const tUp = 520;
     const tSettle = 620;
     const rest = total - tUp - tSettle;
-    const tCruise = Math.round(rest * 0.34);
+    const tCruise = Math.round(rest * 0.15);
     const tDecel = rest - tCruise;
-    const tail = style === "Slow-motion tick" ? 64 : style === "Near-miss" ? SECTOR_WIDTH * 3 + 6 : 0;
-    const tTail = tail === 0 ? 0 : Math.round(tDecel * (style === "Slow-motion tick" ? 0.4 : 0.26));
+    const tail = style === "Slow-motion tick" ? 64 : 0;
+    const tTail = tail === 0 ? 0 : Math.round(tDecel * 0.4);
     const tMain = tDecel - tTail;
 
     const start = IDLE_ROT;
@@ -871,17 +961,44 @@ class Component extends DCLogic {
     const aDecel = (totalAngle - start) - aUp - aCruise;
     const aMain = Math.max(120, aDecel - tail);
 
-    this.segs = [
-      { d: tUp,     a: aUp,     from: start,                     e: p => p * p },
-      { d: tCruise, a: aCruise, from: start + aUp,                e: p => p },
-      { d: tMain,   a: aMain,   from: start + aUp + aCruise,      e: p => 1 - Math.pow(1 - p, 2.2) },
-      { d: tTail,   a: tail,    from: start + aUp + aCruise + aMain, e: p => 1 - Math.pow(1 - p, 1.5) },
-      { d: tSettle, a: 0,       from: totalAngle,                e: p => p, wobble: true }
-    ].filter(s => s.d > 0);
+    this._snapAt = null;
+    this._snapFired = false;
+
+    if (style === "Near-miss") {
+      const nearMissAngle = totalAngle - SECTOR_WIDTH;
+      const aMainNM = Math.max(120, (nearMissAngle - start) - aUp - aCruise);
+      const tHold = Math.min(900, Math.round(tDecel * 0.22));
+      const tSnap = 220;
+      const tMainNM = Math.max(300, tDecel - tHold - tSnap);
+      const snapFrom = start + aUp + aCruise + aMainNM;
+      this.segs = [
+        { d: tUp,     a: aUp,    from: start,                e: p => p * p },
+        { d: tCruise, a: aCruise, from: start + aUp,          e: p => p },
+        { d: tMainNM, a: aMainNM, from: start + aUp + aCruise, e: p => 1 - Math.pow(1 - p, 3.4) },
+        { d: tHold,   a: 0,       from: snapFrom,              e: p => p, wobble: true, wobbleAmp: 1.4, wobbleFreq: 46, wobbleDecay: 260 },
+        { d: tSnap,   a: SECTOR_WIDTH, from: snapFrom,         e: p => 1 - Math.pow(1 - p, 3.2), snap: true },
+        { d: tSettle, a: 0,       from: totalAngle,            e: p => p, wobble: true }
+      ].filter(s => s.d > 0);
+      this._snapAt = tUp + tCruise + tMainNM + tHold;
+      this._ratchetAt = Math.max(0, total - 16533);
+    } else {
+      this.segs = [
+        { d: tUp,     a: aUp,     from: start,                     e: p => p * p },
+        { d: tCruise, a: aCruise, from: start + aUp,                e: p => p },
+        { d: tMain,   a: aMain,   from: start + aUp + aCruise,      e: p => 1 - Math.pow(1 - p, 3) },
+        { d: tTail,   a: tail,    from: start + aUp + aCruise + aMain, e: p => 1 - Math.pow(1 - p, 1.5) },
+        { d: tSettle, a: 0,       from: totalAngle,                e: p => p, wobble: true }
+      ].filter(s => s.d > 0);
+      this._ratchetAt = Math.max(0, total - 16533);
+    }
 
     this.t0 = performance.now();
     this.totalAngle = totalAngle;
-    this.playReelSpinSound();
+    this.audioT0 = this.actx ? this.actx.currentTime : null;
+    this.stopVoice("ratchetVoice");
+    this.ratchetVoice = this.playBuffer("audio/casino-wheel-spin.webm", { gain: 0.7, delay: this._ratchetAt / 1000, fadeIn: 0.6 });
+    this.stopVoice("fireworksVoice");
+    this.fireworksVoice = this.playBuffer("audio/fireworks-spin.webm", { gain: 0.75 });
     clearTimeout(this.flameFadeTimer);
     this._flameFading = false;
     this.flameFadeTimer = setTimeout(() => {
@@ -889,13 +1006,34 @@ class Component extends DCLogic {
       if (this.flameRingRef.current) this.flameRingRef.current.style.opacity = "0";
       if (this.weldSparksRef.current) this.weldSparksRef.current.style.opacity = "0";
     }, Math.max(0, total - 1000));
+    clearTimeout(this.fireworksFadeTimer);
+    const fireworksFadeDur = 1100;
+    this.fireworksFadeTimer = setTimeout(() => {
+      this.fadeOutFireworksSound(fireworksFadeDur);
+    }, Math.max(0, total - fireworksFadeDur));
     cancelAnimationFrame(this.raf);
     this.tick();
+  }
+
+  pointerBump() {
+    const el = this.pointerWrapRef.current;
+    if (!el) return;
+    el.style.transition = "transform 90ms cubic-bezier(0.2,0,0,1)";
+    el.style.transform = "scale(1.16) rotate(-7deg)";
+    setTimeout(() => {
+      if (!el) return;
+      el.style.transition = "transform 260ms cubic-bezier(0.34,1.56,0.64,1)";
+      el.style.transform = "scale(1) rotate(0deg)";
+    }, 90);
   }
 
   tick = () => {
     const now = performance.now();
     let el = now - this.t0;
+    if (this._snapAt != null && !this._snapFired && el >= this._snapAt) {
+      this._snapFired = true;
+      this.pointerBump();
+    }
     let angle = this.totalAngle;
     let omega = 0;
     let done = true;
@@ -905,7 +1043,10 @@ class Component extends DCLogic {
       if (el < s.d) {
         const p = el / s.d;
         if (s.wobble) {
-          angle = this.totalAngle + 4.2 * Math.exp(-el / 150) * Math.cos(el / 52);
+          const amp = s.wobbleAmp != null ? s.wobbleAmp : 4.2;
+          const freq = s.wobbleFreq != null ? s.wobbleFreq : 52;
+          const decay = s.wobbleDecay != null ? s.wobbleDecay : 150;
+          angle = s.from + amp * Math.exp(-el / decay) * Math.cos(el / freq);
           omega = 0;
         } else {
           angle = s.from + s.a * s.e(p);
@@ -946,14 +1087,7 @@ class Component extends DCLogic {
       if (omega > 620) {
         if (this.sector !== -1) {
           this.sector = -1;
-          if (this.chestImgRef.current) this.chestImgRef.current.src = CLOSED;
           this.setFire(0, 150);
-        }
-        const chest = this.chestRef.current;
-        if (chest) {
-          const j = Math.sin(now / 34) * Math.min(2.6, omega / 480);
-          chest.style.transition = "none";
-          chest.style.transform = "scale(0.9) translate(" + j.toFixed(2) + "px, " + (j * 0.4).toFixed(2) + "px)";
         }
       } else {
         const idx = ((Math.floor(((360 - angle) % 360 + 360) % 360 / SECTOR_WIDTH) % SECTORS.length) + SECTORS.length) % SECTORS.length;
@@ -969,6 +1103,8 @@ class Component extends DCLogic {
   land() {
     this.phase = "result";
     this.stopReelSpinSound();
+    this.stopFireworksSound();
+    this.playWinningSound();
     if (this.ringRef.current) {
       this.ringRef.current.style.transform = "rotate(" + this.totalAngle + "deg)";
       this.ringRef.current.style.filter = "none";
@@ -988,13 +1124,27 @@ class Component extends DCLogic {
     this.spawnCoinRain(t.fire);
 
     clearTimeout(this.exitTimer);
+    clearTimeout(this.logoFadeTimer);
+    this.logoFadeTimer = setTimeout(() => {
+      if (this.winLogoRef.current) {
+        this.winLogoRef.current.style.opacity = "0";
+      }
+      if (this.brandLogoRef.current) {
+        this.brandLogoRef.current.style.opacity = "1";
+      }
+    }, 2400);
     this.exitTimer = setTimeout(() => {
       if (this.wheelExitRef.current) {
         this.wheelExitRef.current.style.transform = "translateY(620px)";
         this.wheelExitRef.current.style.opacity = "0";
       }
+      if (this.winLogoRef.current) {
+        this.winLogoRef.current.style.opacity = "0";
+      }
       if (this.winCaptionRef.current) {
-        this.winCaptionRef.current.textContent = "Parabéns, você acabou de ganhar o " + t.name + "!";
+        this.winCaptionRef.current.textContent = key === "mega"
+          ? "Congratulations for such an amazing win! Please allow up to 10 minutes for the money to appear in your account"
+          : "Congratulations, you just won the " + t.name + ", the money should appear in your balance within a few seconds";
         this.winCaptionRef.current.style.opacity = "1";
       }
       if (this.dismissBtnRef.current) {
@@ -1022,8 +1172,6 @@ class Component extends DCLogic {
       rootRef: this.rootRef,
       ringRef: this.ringRef,
       phoneRef: this.phoneRef,
-      chestRef: this.chestRef,
-      chestImgRef: this.chestImgRef,
       fireRef: this.fireRef,
       haloRef: this.haloRef,
       sparksRef: this.sparksRef,
@@ -1035,24 +1183,34 @@ class Component extends DCLogic {
       winAmountRef: this.winAmountRef,
       winTitleRef: this.winTitleRef,
       winLogoRef: this.winLogoRef,
+      brandLogoRef: this.brandLogoRef,
       coinRainRef: this.coinRainRef,
       coinsSoundRef: this.coinsSoundRef,
-      reelSpinRef: this.reelSpinRef,
       embersRef: this.embersRef,
       pointerWrapRef: this.pointerWrapRef,
       wheelGroupRef: this.wheelGroupRef,
       wheelExitRef: this.wheelExitRef,
       winCaptionRef: this.winCaptionRef,
       dismissBtnRef: this.dismissBtnRef,
-      onDismiss: () => { if (typeof this.props.onDismiss === "function") this.props.onDismiss(); },
+      onDismiss: () => {
+        if (typeof this.props.onDismiss === "function") this.props.onDismiss();
+        if (typeof window.__jwOnDismiss === "function") window.__jwOnDismiss();
+      },
       muteBtnRef: this.muteBtnRef,
       toggleMute: () => {
         this.musicMuted = !this.musicMuted;
+        const mutedGain = (key, base) => {
+          const v = this[key];
+          if (v) v.gainNode.gain.value = this.musicMuted ? 0 : base;
+        };
         if (this.musicMuted) {
-          if (this.reelSpinRef.current) this.reelSpinRef.current.pause();
           if (this.coinsSoundRef.current) this.coinsSoundRef.current.pause();
+          mutedGain("ratchetVoice", 0.7);
+          mutedGain("fireworksVoice", 0.75);
+          mutedGain("winningVoice", 0.8);
         } else if (this.phase === "spinning") {
-          this.playReelSpinSound();
+          mutedGain("ratchetVoice", 0.7);
+          mutedGain("fireworksVoice", 0.75);
         }
         this.setState({ muted: this.musicMuted });
       },
@@ -1073,7 +1231,15 @@ class Component extends DCLogic {
       countdownNumRef: this.countdownNumRef,
       preloaderRef: this.preloaderRef,
       preloaderTextRef: this.preloaderTextRef,
-      countdownAudioRef: this.countdownAudioRef
+      countdownAudioRef: this.countdownAudioRef,
+      tapPromptRef: this.tapPromptRef,
+      onTapToStart: () => {
+        window.removeEventListener("pointerdown", this.unlockAudio);
+        this.unlockAllAudio();
+        window.__jwAudioUnlocked = true;
+        this.hideTapPrompt();
+        if (!this._manualOverride) this.scheduleAutoSpin();
+      }
     };
   }
 }
